@@ -529,7 +529,12 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
+.town-warn { color: #f0a33c; font-size: 13px; flex: none; }
 .town-opt.hl { background: rgba(255, 255, 255, 0.14); }
 .town-opt.current { font-weight: 600; }
 .town-opt.current::after { content: " ✓"; opacity: 0.7; }

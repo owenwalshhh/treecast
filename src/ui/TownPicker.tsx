@@ -106,19 +106,26 @@ export function TownPicker({ towns, activeSlug, lang, onPick }: Props) {
           {matches.length === 0 && (
             <li className="town-opt empty" aria-disabled="true">{t("townNoMatch", lang)}</li>
           )}
-          {matches.map((tw, i) => (
-            <li
-              key={tw.slug}
-              id={`tp-opt-${tw.slug}`}
-              role="option"
-              aria-selected={tw.slug === activeSlug}
-              className={`town-opt${i === highlight ? " hl" : ""}${tw.slug === activeSlug ? " current" : ""}`}
-              onMouseEnter={() => setHighlight(i)}
-              onMouseDown={(e) => { e.preventDefault(); choose(tw.slug); }}
-            >
-              {tw.name}
-            </li>
-          ))}
+          {matches.map((tw, i) => {
+            const noPlanner = tw.hasPlanner === false;
+            return (
+              <li
+                key={tw.slug}
+                id={`tp-opt-${tw.slug}`}
+                role="option"
+                aria-selected={tw.slug === activeSlug}
+                title={noPlanner ? t("plannerComingSoon", lang) : undefined}
+                className={`town-opt${i === highlight ? " hl" : ""}${tw.slug === activeSlug ? " current" : ""}`}
+                onMouseEnter={() => setHighlight(i)}
+                onMouseDown={(e) => { e.preventDefault(); choose(tw.slug); }}
+              >
+                <span>{tw.name}</span>
+                {noPlanner && (
+                  <span className="town-warn" aria-label={t("plannerComingSoon", lang)}>⚠</span>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
