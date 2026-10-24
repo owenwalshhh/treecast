@@ -290,6 +290,7 @@ export const STRINGS = {
     ht: "Chwazi yon vil",
   },
   townLoading: { en: "Loading…", es: "Cargando…" },
+  townNoMatch: { en: "No matching city", es: "Ninguna ciudad coincide" },
   subheading: {
     en: "Serving Greater Boston",
     es: "Para el Gran Boston",
