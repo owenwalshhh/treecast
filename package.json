@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "pipeline": "node pipeline/bake.mjs",
     "bake:bg": "node pipeline/bake.mjs",
+    "bake:parallel": "node pipeline/bake-parallel.mjs",
     "bake:sh": "bash pipeline/bake-all.sh",
     "data:export": "node pipeline/export-data.mjs",
     "data:import": "node pipeline/import-data.mjs",

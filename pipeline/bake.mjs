@@ -44,9 +44,11 @@ const slugify = (s) =>
 // --- args ---
 const args = process.argv.slice(2);
 let force = false;
+let townOnly = false; // when set, skip region prep + finalize (parallel wrapper owns those)
 const requested = [];
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--force") force = true;
+  else if (args[i] === "--town-only") townOnly = true;
   else if (args[i] === "--town") requested.push(args[++i]);
   else if (args[i].startsWith("--town=")) requested.push(args[i].slice(7));
 }
@@ -150,7 +152,7 @@ let built = 0, skipped = 0, failed = 0;
 // Region EJ + LEAD FIRST, so each town's candidate join can attach block-group
 // equity and tract energy burden. Needs the raw EJ geometry present.
 const haveEj = existsSync(join(RAW, "ej", "ej-blockgroups.geojson"));
-if (haveEj) {
+if (haveEj && !townOnly) {
   console.log("== region EJ block groups ==");
   try { execFileSync("node", [join(PIPE, "06-region.mjs")], { stdio: "inherit" }); } catch (e) { console.error("region:", e.message); }
   if (process.env.LEAD_CSV) {
@@ -172,10 +174,12 @@ for (const city of towns) {
 }
 
 // Town outlines (for the overview) + the public index, AFTER towns are built.
-if (haveEj) {
-  try { execFileSync("node", [join(PIPE, "07-town-outlines.mjs")], { stdio: "inherit" }); } catch (e) { console.error("outlines:", e.message); }
+if (!townOnly) {
+  if (haveEj) {
+    try { execFileSync("node", [join(PIPE, "07-town-outlines.mjs")], { stdio: "inherit" }); } catch (e) { console.error("outlines:", e.message); }
+  }
+  try { execFileSync("node", [join(PIPE, "build-index.mjs")], { stdio: "inherit" }); } catch {}
 }
-try { execFileSync("node", [join(PIPE, "build-index.mjs")], { stdio: "inherit" }); } catch {}
 
 console.log(`\n== done: built=${built} skipped=${skipped} failed=${failed} ==`);
 process.exit(failed ? 1 : 0);
