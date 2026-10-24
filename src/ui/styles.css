@@ -660,4 +660,12 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 .resident-where { font-size: 14px; font-weight: 600; }
 .resident-why { font-size: 13px; opacity: 0.82; line-height: 1.4; margin-top: 2px; }
 .resident-none { margin: 0; font-size: 14px; opacity: 0.85; }
-.resident-foot { margin: 12px 0 0; font-size: 11.5px; opacity: 0.65; line-height: 1.4; }
+.resident-caveat {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #f0a775;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 10px;
+}
+.resident-foot { margin: 10px 0 0; font-size: 11.5px; opacity: 0.65; line-height: 1.4; }

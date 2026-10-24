@@ -86,14 +86,20 @@ export function ResidentView({ candidates, center, lang, onExit }: Props) {
 
     // Candidates within ~250 ft of the home, scored by the real energy model
     // (pure placement science; we show the resident the single-home story).
-    const near = candidates
+    // Candidate spots within ~250 ft, scored by the real energy model, then
+    // reduced to the best DISTINCT SIDES of the home (we give directional
+    // guidance, not an exact point on possibly-neighboring land).
+    const scored = candidates
       .map((c) => ({ c, d: distFt({ lng, lat }, c) }))
       .filter((x) => x.d <= 250)
-      .map((x) => ({ ...x, score: energyScore(x.c) * (0.5 + 0.5 * distanceFactor(x.c.distanceToWallFt)) }))
-      .filter((x) => x.score > 0) // never recommend a spot that doesn't help
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
-      .map((x) => x.c);
+      .map((x) => ({ c: x.c, score: energyScore(x.c) * (0.5 + 0.5 * distanceFactor(x.c.distanceToWallFt)) }))
+      .filter((x) => x.score > 0) // never recommend a side that doesn't help
+      .sort((a, b) => b.score - a.score);
+    const bySide = new Map();
+    for (const x of scored) {
+      if (!bySide.has(x.c.direction)) bySide.set(x.c.direction, x.c);
+    }
+    const near = [...bySide.values()].slice(0, 3);
     setBest(near);
 
     // Home marker.
@@ -103,13 +109,20 @@ export function ResidentView({ candidates, center, lang, onExit }: Props) {
     hEl.textContent = "🏠";
     homeMarker.current = new maplibregl.Marker({ element: hEl }).setLngLat([lng, lat]).addTo(map);
 
-    // Spot markers (numbered best→).
+    // Direction badges: placed a SHORT FIXED offset from the home toward each
+    // recommended compass side — so it clearly reads as "the west side of your
+    // home", not a surveyed spot on a specific lot.
+    const OFFSET_FT = 60;
+    const COMPASS: Record<string, [number, number]> = { N: [0, 1], NE: [0.7, 0.7], E: [1, 0], SE: [0.7, -0.7], S: [0, -1], SW: [-0.7, -0.7], W: [-1, 0], NW: [-0.7, 0.7] };
     spotMarkers.current.forEach((m) => m.remove());
     spotMarkers.current = near.map((c, i) => {
+      const [dx, dy] = COMPASS[c.direction] ?? [0, 0];
+      const dLat = (OFFSET_FT * dy) / FT_PER_DEG_LAT;
+      const dLng = (OFFSET_FT * dx) / (FT_PER_DEG_LAT * Math.cos((lat * Math.PI) / 180));
       const el = document.createElement("div");
       el.className = "resident-spot";
       el.textContent = String(i + 1);
-      return new maplibregl.Marker({ element: el }).setLngLat([c.lng, c.lat]).addTo(map);
+      return new maplibregl.Marker({ element: el }).setLngLat([lng + dLng, lat + dLat]).addTo(map);
     });
 
     map.easeTo({ center: [lng, lat], zoom: 17, duration: 500 });
@@ -162,7 +175,7 @@ export function ResidentView({ candidates, center, lang, onExit }: Props) {
                       <span className="resident-rank">{i + 1}</span>
                       <div>
                         <div className="resident-where">
-                          {directionName(c.direction, lang)} · {Math.round(c.distanceToWallFt)} ft · {leaf}
+                          {directionName(c.direction, lang)} {t("residentSideLabel", lang)} · {leaf}
                         </div>
                         <div className="resident-why">
                           {ex.reasons[0] ? reasonText(ex.reasons[0], lang) : ""}
@@ -172,6 +185,7 @@ export function ResidentView({ candidates, center, lang, onExit }: Props) {
                   );
                 })}
               </ol>
+              <p className="resident-caveat">⚠ {t("residentPropertyCaveat", lang)}</p>
               <p className="resident-foot">{t("residentEstimate", lang)}</p>
             </>
           )}

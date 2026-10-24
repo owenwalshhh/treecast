@@ -124,19 +124,27 @@ export const STRINGS = {
   },
   residentExit: { en: "Close", es: "Cerrar" },
   residentTapPrompt: {
-    en: "Tap your home on the map to see where a tree would help it most.",
-    es: "Toca tu casa en el mapa para ver dónde un árbol ayudaría más.",
+    en: "Tap your home on the map to see which side is best for a tree.",
+    es: "Toca tu casa en el mapa para ver qué lado es mejor para un árbol.",
   },
-  residentTapAgain: { en: "Tap again to pick a different spot.", es: "Toca de nuevo para elegir otro lugar." },
+  residentTapAgain: { en: "Tap again to pick a different home.", es: "Toca de nuevo para elegir otra casa." },
   residentUseLocation: { en: "Use my location", es: "Usar mi ubicación" },
-  residentResultTitle: { en: "Best spots for a tree near you", es: "Mejores lugares para un árbol cerca de ti" },
+  residentResultTitle: { en: "Best side of your home for a tree", es: "Mejor lado de tu casa para un árbol" },
   residentNone: {
-    en: "No helpful spot found right next to this home. Try tapping a nearby building.",
-    es: "No se encontró un buen lugar junto a esta casa. Prueba tocar un edificio cercano.",
+    en: "No helpful side found right at this home. Try tapping a nearby building.",
+    es: "No se encontró un buen lado en esta casa. Prueba tocar un edificio cercano.",
   },
   residentEstimate: {
-    en: "Estimated from sun angle and your home's walls. We never pick a spot that would raise your heating.",
-    es: "Estimado según el sol y las paredes de tu casa. Nunca elegimos un lugar que suba tu calefacción.",
+    en: "Estimated from sun angle and your home's walls. We never pick a side that would raise your heating.",
+    es: "Estimado según el sol y las paredes de tu casa. Nunca elegimos un lado que suba tu calefacción.",
+  },
+  residentPropertyCaveat: {
+    en: "This shows the best DIRECTION for a tree near your home, not an exact spot. Make sure any planting is on your property, and ask your city's tree program before planting.",
+    es: "Esto muestra la mejor DIRECCIÓN para un árbol cerca de tu casa, no un punto exacto. Asegúrate de que la plantación sea en tu propiedad y consulta el programa de árboles de tu ciudad antes de plantar.",
+  },
+  residentSideLabel: {
+    en: "side of your home",
+    es: "lado de tu casa",
   },
   residentToggle: { en: "Resident view", es: "Vista de residente" },
   reason_westBest: {
