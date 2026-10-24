@@ -17,3 +17,7 @@ tsconfig.tsbuildinfo
 
 # pipeline runtime logs
 pipeline/bake.log
+
+# data transfer archives (export/import between machines)
+treecast-data.tgz
+treecast-raw.tgz
