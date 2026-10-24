@@ -56,7 +56,7 @@ requirements it satisfies. `[ ]` = open, `[x]` = done.
   groups for all Inner Core towns (geometry + GEOID + EJ criteria + limited-
   English %), simplified < 5 MB, to `public/data/region/`. (R4.1)
 
-- [ ] **D2. LEAD by tract + utility by town.** `lead-by-tract.json` keyed by the
+- [x] **D2. LEAD by tract + utility by town.** `lead-by-tract.json` keyed by the
   11-digit tract; `utility-by-town.json` from the Hackachusetts kit. (R4.2, R4.3)
 
 - [x] **D3. Per-candidate block-group join.** In the candidate stage, attach

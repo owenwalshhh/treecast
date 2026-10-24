@@ -116,6 +116,22 @@ function buildOne(city) {
 
 // --- run ---
 let built = 0, skipped = 0, failed = 0;
+// Region EJ + LEAD FIRST, so each town's candidate join can attach block-group
+// equity and tract energy burden. Needs the raw EJ geometry present.
+const haveEj = existsSync(join(RAW, "ej", "ej-blockgroups.geojson"));
+if (haveEj) {
+  console.log("== region EJ block groups ==");
+  try { execFileSync("node", [join(PIPE, "06-region.mjs")], { stdio: "inherit" }); } catch (e) { console.error("region:", e.message); }
+  if (process.env.LEAD_CSV) {
+    console.log("== LEAD energy burden ==");
+    try { execFileSync("node", [join(PIPE, "08-lead.mjs")], { stdio: "inherit" }); } catch (e) { console.error("lead:", e.message); }
+  } else {
+    console.log("(no LEAD_CSV — energy burden skipped; set LEAD_CSV to the 'MA AMI Census Tracts 2022.csv' to include it)");
+  }
+} else {
+  console.log("(no data/raw/ej/ej-blockgroups.geojson — run data/raw/ej/fetch-geometry.mjs for regional equity)");
+}
+
 for (const city of towns) {
   const slug = slugify(city);
   const chelseaLegacy = slug === "chelsea" && existsSync(join(DATA, "candidate-sites.geojson")) && !existsSync(join(DATA, "chelsea"));
@@ -124,16 +140,10 @@ for (const city of towns) {
   try { buildOne(city) ? built++ : failed++; } catch (e) { console.error(`  !! ${city}: ${e.message}`); failed++; }
 }
 
-// Region EJ + outlines + index (best-effort; need the raw EJ geometry present).
-try {
-  if (existsSync(join(RAW, "ej", "ej-blockgroups.geojson"))) {
-    console.log("\n== region EJ + outlines ==");
-    execFileSync("node", [join(PIPE, "06-region.mjs")], { stdio: "inherit" });
-    execFileSync("node", [join(PIPE, "07-town-outlines.mjs")], { stdio: "inherit" });
-  } else {
-    console.log("\n(skipping region step — data/raw/ej/ej-blockgroups.geojson missing; run data/raw/ej/fetch-geometry.mjs)");
-  }
-} catch (e) { console.error("region step:", e.message); }
+// Town outlines (for the overview) + the public index, AFTER towns are built.
+if (haveEj) {
+  try { execFileSync("node", [join(PIPE, "07-town-outlines.mjs")], { stdio: "inherit" }); } catch (e) { console.error("outlines:", e.message); }
+}
 try { execFileSync("node", [join(PIPE, "build-index.mjs")], { stdio: "inherit" }); } catch {}
 
 console.log(`\n== done: built=${built} skipped=${skipped} failed=${failed} ==`);

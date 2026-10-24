@@ -52,6 +52,12 @@ email to yourself — it's tiny).
    node data/raw/ej/fetch-geometry.mjs
    ```
 
+   (Optional) For energy burden, download "MA 2022" from the DOE LEAD Tool,
+   unzip it, and set LEAD_CSV to the AMI census-tracts file before baking:
+   - PowerShell:  `$env:LEAD_CSV="C:\path\to\MA AMI Census Tracts 2022.csv"`
+   - CMD:         `set LEAD_CSV=C:\path\to\MA AMI Census Tracts 2022.csv`
+   The bake then adds energy burden per tract automatically.
+
 5. Bake every town (sequential; Boston is the slow one):
    ```
    npm run bake:bg

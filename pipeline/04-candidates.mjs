@@ -239,6 +239,14 @@ try {
   ).features;
 } catch {}
 
+// LEAD energy burden by census tract (first 11 digits of GEOID), if present.
+let leadByTract = null;
+try {
+  leadByTract = JSON.parse(
+    readFileSync(join(ROOT, "public", "data", "region", "lead-by-tract.json"), "utf8"),
+  ).tracts;
+} catch {}
+
 if (blockGroups?.length) {
   // Ray-cast point-in-polygon (mirrors src/optimizer/block-group.ts, which the
   // property test guards).
@@ -274,10 +282,14 @@ if (blockGroups?.length) {
       f.properties.bgMinorityPct = p.minorityPct ?? null;
       f.properties.bgLimitedEnglishPct = p.limitedEnglishPct ?? null;
       f.properties.bgIncome = p.income ?? null;
+      // Tract-level energy burden from LEAD (join on the 11-digit tract).
+      const lead = leadByTract?.[p.tract];
+      if (lead) f.properties.energyBurdenPct = lead.energyBurdenPct;
       matched++;
     }
   }
-  console.log(`  joined ${matched}/${features.length} candidates to an EJ block group`);
+  const withBurden = features.filter((f) => f.properties.energyBurdenPct != null).length;
+  console.log(`  joined ${matched}/${features.length} candidates to an EJ block group; ${withBurden} also have LEAD energy burden`);
 }
 
 writeFileSync(

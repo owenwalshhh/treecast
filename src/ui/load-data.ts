@@ -180,7 +180,7 @@ export async function loadAppData(base = "/data"): Promise<AppData> {
         return { ...site, lng, lat, needTier: p.needTier,
           geoid: p.geoid, tract: p.tract, ejCriteria: p.ejCriteria,
           bgMinorityPct: p.bgMinorityPct, bgLimitedEnglishPct: p.bgLimitedEnglishPct,
-          bgIncome: p.bgIncome };
+          bgIncome: p.bgIncome, energyBurdenPct: p.energyBurdenPct };
       })
       .filter((c: GeoCandidate | null): c is GeoCandidate => c !== null);
 

@@ -42,8 +42,8 @@
       "url": "https://www.energy.gov/scep/slsc/lead-tool",
       "license": "U.S. Government public data",
       "accessed": "2026-10-24",
-      "used_for": "Energy-burden context by census tract (planned; not yet wired into the pipeline).",
-      "cannot_tell_us": "Individual household bills. Modeled averages only."
+      "used_for": "Energy burden (annual home energy cost / income) by census tract, joined to each candidate via its block group's tract.",
+      "cannot_tell_us": "Individual household bills. Modeled tract averages; 2 of our tracts have no LEAD row."
     },
     {
       "name": "Existing street trees (city inventories)",

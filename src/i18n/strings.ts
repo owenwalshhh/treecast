@@ -107,6 +107,7 @@ export const STRINGS = {
   whyEquity: { en: "Neighborhood need", es: "Necesidad del barrio" },
   whyUtility: { en: "Electric utility", es: "Compañía eléctrica" },
   whyEjCriteria: { en: "EJ criteria", es: "Criterios JA" },
+  whyEnergyBurden: { en: "Energy burden (LEAD)", es: "Carga energética (LEAD)" },
   overviewToggle: { en: "All of Inner Core", es: "Todo el Inner Core" },
   overviewBack: { en: "Back to town", es: "Volver al pueblo" },
   overviewLegendTitle: { en: "EJ block groups", es: "Grupos de JA" },
