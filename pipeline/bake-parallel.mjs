@@ -73,6 +73,12 @@ if (existsSync(join(RAW, "ej", "ej-blockgroups.geojson"))) {
   }
 }
 
+// Pre-download Overture ONCE for the whole region before fanning out, so every
+// town child reads the local parquet cache instead of racing on S3.
+console.log("== prefetch Overture (one download for all towns) ==");
+try { execFileSync("node", [join(PIPE, "bake.mjs"), "--prefetch-only"], { stdio: "inherit", env: process.env }); }
+catch (e) { console.error("prefetch:", e.message, "— towns will fall back to S3."); }
+
 // Fan out town bakes, `jobs` at a time.
 console.log(`\n== baking ${towns.length} town(s), ${jobs} at a time ==`);
 const results = { ok: [], fail: [] };

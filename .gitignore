@@ -21,3 +21,6 @@ pipeline/bake.log
 # data transfer archives (export/import between machines)
 treecast-data.tgz
 treecast-raw.tgz
+
+# Overture prefetch cache (reproducible, large)
+data/raw/overture/

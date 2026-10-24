@@ -33,8 +33,7 @@ COPY (
       height,
       geometry
     FROM read_parquet(
-      's3://overturemaps-us-west-2/release/' || getvariable('latest') ||
-        '/theme=buildings/type=building/*',
+      '${SOURCE}',
       hive_partitioning = 1
     )
     WHERE bbox.xmin BETWEEN ${WEST} AND ${EAST}

@@ -38,6 +38,44 @@ const DUCKDB =
     : rawDuck;
 const MARGIN = process.env.MARGIN || "0.004";
 
+// --- Overture prefetch cache (step 00c) ---
+// When these local parquet files exist, the per-town buildings/roads steps read
+// them instead of AWS S3 — one remote download for the whole region instead of
+// ~40 flaky ones. Written under data/raw/overture (gitignored, reproducible).
+const OVT_DIR = join(RAW, "overture");
+const OVT_BUILDINGS = join(OVT_DIR, "buildings.parquet");
+const OVT_ROADS = join(OVT_DIR, "roads.parquet");
+const S3_LATEST =
+  "' || getvariable('latest') || '"; // used only in the S3 fallback glob below
+// Resolve the read_parquet SOURCE for a theme: local cache if present AND
+// valid, else S3. A partial/corrupt cache file (e.g. a download killed mid-
+// write) is ignored so a town falls back to S3 instead of crashing.
+const _validCache = {};
+function cacheUsable(path) {
+  if (!existsSync(path)) return false;
+  if (_validCache[path] !== undefined) return _validCache[path];
+  try {
+    execFileSync(DUCKDB, [], {
+      input: `SELECT count(*) FROM read_parquet('${path.replace(/\\/g, "/")}') LIMIT 1;`,
+      stdio: ["pipe", "ignore", "ignore"],
+    });
+    _validCache[path] = true;
+  } catch {
+    _validCache[path] = false;
+  }
+  return _validCache[path];
+}
+function sourceFor(theme) {
+  if (theme === "buildings") {
+    return cacheUsable(OVT_BUILDINGS)
+      ? OVT_BUILDINGS.replace(/\\/g, "/")
+      : `s3://overturemaps-us-west-2/release/${S3_LATEST}/theme=buildings/type=building/*`;
+  }
+  return cacheUsable(OVT_ROADS)
+    ? OVT_ROADS.replace(/\\/g, "/")
+    : `s3://overturemaps-us-west-2/release/${S3_LATEST}/theme=transportation/type=segment/*`;
+}
+
 const slugify = (s) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -53,9 +91,11 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === "--town-only") townOnly = true;
   else if (args[i] === "--verbose" || args[i] === "-v") verbose = true;
   else if (args[i] === "--small-first") smallFirst = true;
+  else if (args[i] === "--prefetch-only") { /* handled below */ }
   else if (args[i] === "--town") requested.push(args[++i]);
   else if (args[i].startsWith("--town=")) requested.push(args[i].slice(7));
 }
+const prefetchOnly = args.includes("--prefetch-only");
 
 const townDefs = JSON.parse(readFileSync(join(PIPE, "towns.json"), "utf8")).towns;
 const areaOf = Object.fromEntries(townDefs.map((t) => [t.name, t.areaSqMi ?? 999]));
@@ -137,6 +177,56 @@ function featureCount(p) {
   try { return JSON.parse(readFileSync(p, "utf8")).features.length; } catch { return 0; }
 }
 
+// Pre-download Overture buildings + roads for the whole Inner Core bbox ONCE
+// into local parquet (step 00c), so every town then reads locally. Skips if the
+// cache already exists. Returns true if the local cache is present afterward.
+function prefetchOverture() {
+  if (cacheUsable(OVT_BUILDINGS) && cacheUsable(OVT_ROADS)) {
+    console.log("== Overture cache present — towns read locally ==");
+    return true;
+  }
+  // Union bbox of every town. Prefer the region outlines file; fall back to a
+  // hardcoded Inner Core bbox (computed from MAPC town outlines, 0.01° margin).
+  let bbox = { west: -71.2388, south: 42.2279, east: -70.9660, north: 42.4815 };
+  const outlines = join(DATA, "region", "town-outlines.geojson");
+  if (existsSync(outlines)) {
+    try {
+      const gj = JSON.parse(readFileSync(outlines, "utf8"));
+      let W = 180, S = 90, E = -180, N = -90;
+      const walk = (c) => { if (typeof c[0] === "number") { W = Math.min(W, c[0]); E = Math.max(E, c[0]); S = Math.min(S, c[1]); N = Math.max(N, c[1]); } else c.forEach(walk); };
+      gj.features.forEach((f) => f.geometry && f.geometry.coordinates && walk(f.geometry.coordinates));
+      const m = 0.01;
+      if (W < E && S < N) bbox = { west: W - m, south: S - m, east: E + m, north: N + m };
+    } catch {}
+  }
+  mkdirSync(OVT_DIR, { recursive: true });
+  console.log(`== prefetching Overture for the whole region (one download) ==\n   bbox ${bbox.west},${bbox.south} .. ${bbox.east},${bbox.north}`);
+  // Buildings FIRST — the critical layer. If this fails, towns fall back to S3.
+  if (!cacheUsable(OVT_BUILDINGS)) {
+    try {
+      console.log("   downloading buildings…");
+      runSql("00c-prefetch-buildings.sql", {
+        WEST: bbox.west, SOUTH: bbox.south, EAST: bbox.east, NORTH: bbox.north,
+        BUILDINGS_OUT: OVT_BUILDINGS.replace(/\\/g, "/"),
+      });
+    } catch (e) { console.error("   buildings prefetch failed:", e.message); }
+  }
+  // Roads SECOND — best-effort. Only used for candidate setback; a stall here
+  // must not block the bake, so failure is logged and the town reads S3 roads.
+  if (!cacheUsable(OVT_ROADS)) {
+    try {
+      console.log("   downloading roads…");
+      runSql("00c-prefetch-roads.sql", {
+        WEST: bbox.west, SOUTH: bbox.south, EAST: bbox.east, NORTH: bbox.north,
+        ROADS_OUT: OVT_ROADS.replace(/\\/g, "/"),
+      });
+    } catch (e) { console.error("   roads prefetch failed (towns will read S3 roads):", e.message); }
+  }
+  const b = cacheUsable(OVT_BUILDINGS), r = cacheUsable(OVT_ROADS);
+  console.log(`== Overture cache: buildings ${b ? "local ✓" : "S3 fallback"}, roads ${r ? "local ✓" : "S3 fallback"} ==`);
+  return b;
+}
+
 function buildOne(city) {
   const slug = slugify(city);
   const out = join(DATA, slug);
@@ -160,14 +250,14 @@ function buildOne(city) {
   // 2) buildings, clipped.
   console.log("  [2/6] buildings…");
   runSql("01-buildings.sql", {
-    WEST: west, SOUTH: south, EAST: east, NORTH: north,
+    WEST: west, SOUTH: south, EAST: east, NORTH: north, SOURCE: sourceFor("buildings"),
     BOUNDARY: bnd.replace(/\\/g, "/"), OUT: join(out, "buildings.geojson").replace(/\\/g, "/"),
   });
 
   // 3) roads, clipped.
   console.log("  [3/6] roads…");
   runSql("02-roads.sql", {
-    WEST: west, SOUTH: south, EAST: east, NORTH: north,
+    WEST: west, SOUTH: south, EAST: east, NORTH: north, SOURCE: sourceFor("roads"),
     BOUNDARY: bnd.replace(/\\/g, "/"), OUT: join(out, "roads.geojson").replace(/\\/g, "/"),
   });
 
@@ -208,6 +298,14 @@ if (haveEj && !townOnly) {
 } else {
   console.log("(no data/raw/ej/ej-blockgroups.geojson — run data/raw/ej/fetch-geometry.mjs for regional equity)");
 }
+
+// Pre-download Overture once for the whole region, so each town reads locally.
+// (Skipped under --town-only: the parallel wrapper runs it before fanning out.)
+if (prefetchOnly) {
+  const ok = prefetchOverture();
+  process.exit(ok ? 0 : 1);
+}
+if (!townOnly) prefetchOverture();
 
 for (const city of towns) {
   const slug = slugify(city);

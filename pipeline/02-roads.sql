@@ -28,8 +28,7 @@ COPY (
       id,
       geometry
     FROM read_parquet(
-      's3://overturemaps-us-west-2/release/' || getvariable('latest') ||
-        '/theme=transportation/type=segment/*',
+      '${SOURCE}',
       hive_partitioning = 1
     )
     WHERE bbox.xmin BETWEEN ${WEST} AND ${EAST}
