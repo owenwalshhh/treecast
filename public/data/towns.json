@@ -1,0 +1,15 @@
+{
+  "source": "https://www.mapc.org/get-involved/subregions/icc/",
+  "subregion": "MAPC Inner Core (ICC)",
+  "note": "Only towns the pipeline has built appear here. base points at the data folder for each town; Chelsea currently uses the legacy flat /data path.",
+  "towns": [
+    {
+      "name": "Chelsea",
+      "slug": "chelsea",
+      "base": "/data",
+      "buildings": 17834,
+      "candidates": 2813,
+      "bytes": 8681469
+    }
+  ]
+}

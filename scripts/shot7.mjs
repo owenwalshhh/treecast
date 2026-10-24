@@ -1,0 +1,25 @@
+import { chromium } from "playwright";
+const DIR = process.env.SHOT_DIR || "/tmp";
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1360, height: 860 } });
+const errors = [];
+page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+page.on("pageerror", (e) => errors.push(String(e)));
+await page.goto("http://127.0.0.1:5173/", { waitUntil: "domcontentloaded" });
+await page.waitForTimeout(2500);
+await page.getByRole("button", { name: /^Optimize$/ }).click();
+await page.waitForTimeout(2000);
+await page.screenshot({ path: `${DIR}/ui-markers.png` });
+// Now enter draw mode to test the dim.
+await page.getByRole("button", { name: /Area/ }).first().click();
+await page.waitForTimeout(250);
+await page.getByRole("button", { name: /Select an area/i }).click();
+await page.waitForTimeout(250);
+const canvas = page.locator("canvas").first();
+await canvas.click({ position: { x: 650, y: 350 } });
+await canvas.click({ position: { x: 820, y: 360 } });
+await page.mouse.move(740, 470);
+await page.waitForTimeout(500);
+await page.screenshot({ path: `${DIR}/ui-dim.png` });
+console.log("ERRORS:" + JSON.stringify(errors));
+await browser.close();

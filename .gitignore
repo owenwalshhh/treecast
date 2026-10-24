@@ -1,0 +1,16 @@
+# dependencies & build output
+node_modules/
+dist/
+
+# local env & secrets
+.env
+.env.*
+
+# DuckDB write-ahead logs
+*.duckdb.wal
+
+# macOS
+.DS_Store
+
+# TS build cache
+tsconfig.tsbuildinfo

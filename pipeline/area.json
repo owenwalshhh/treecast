@@ -1,0 +1,16 @@
+{
+  "name": "Chelsea",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.0590651,
+    "south": 42.3800806,
+    "east": -71.0046663,
+    "north": 42.418210099999996
+  },
+  "center": {
+    "lng": -71.0318657,
+    "lat": 42.39914535
+  },
+  "town_name_ej": "Chelsea",
+  "town_name_utility": "CHELSEA"
+}

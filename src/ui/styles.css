@@ -1,0 +1,544 @@
+/* Treecast — global styles and design tokens.
+ *
+ * One place for color, spacing, and type. Colorblind-safe palette (green for
+ * trees, blue/orange accents — distinguishable for the common CVD types), and
+ * color never carries meaning alone (accessibility.md); labels/icons go with it.
+ */
+
+:root {
+  /* Palette — Okabe-Ito-inspired, colorblind-safe. */
+  --tree: #1b7f3b;          /* planted tree (green) */
+  --tree-young: #8bc34a;    /* young crown */
+  --accent: #0072b2;        /* blue accent (actions) */
+  --warn: #d55e00;          /* orange (penalty/attention) */
+
+  --bg: #f6f7f5;
+  --panel: #ffffff;
+  --panel-2: #eef1ec;
+  --text: #1a1f1a;
+  --muted: #5c655c;
+  --border: #d4dad2;
+  --shadow: 0 6px 24px rgba(20, 35, 20, 0.14);
+
+  --radius: 18px;
+  --radius-sm: 12px;
+  --space: 16px;
+  --font: "Museo Sans", "Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121512;
+    --panel: #1b1f1b;
+    --panel-2: #232823;
+    --text: #e8ece7;
+    --muted: #9aa69a;
+    --border: #333a33;
+    --shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visible keyboard focus everywhere (accessibility.md). */
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Buttons share one clean look. */
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background 120ms ease, transform 80ms ease;
+}
+button:hover { background: var(--border); }
+button:active { transform: translateY(1px); }
+button.primary {
+  background: var(--tree);
+  border-color: var(--tree);
+  color: #fff;
+  font-weight: 600;
+}
+button.primary:hover { filter: brightness(1.08); }
+button:disabled { opacity: 0.55; cursor: wait; }
+
+/* Range sliders a touch cleaner. */
+input[type="range"] { width: 100%; accent-color: var(--tree); }
+
+/* Tree markers on the map. The ring scales with crown size; the leaf glyph
+   keeps meaning without relying on color alone. No white stroke — a soft dark
+   halo gives contrast on a busy basemap instead. */
+.tree-marker {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--tree-young), var(--tree));
+  border: none;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.55),
+    0 2px 6px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: width 500ms ease, height 500ms ease, font-size 500ms ease;
+}
+.tree-marker span { font-size: 0.62em; line-height: 1; filter: saturate(0) brightness(5); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-marker { transition: none; }
+  button { transition: none; }
+}
+
+/* Simple table polish. */
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; }
+tbody tr:nth-child(odd) { background: color-mix(in srgb, var(--panel-2) 50%, transparent); }
+
+/* ---- zoom.earth-style shell ---- */
+
+/* Full-bleed map fills the viewport; panels float over it. */
+.app-shell { position: fixed; inset: 0; }
+.map-full { position: absolute; inset: 0; }
+
+/* Frosted dark glass panel, like zoom.earth's floating menus. */
+.glass {
+  background: rgba(22, 28, 24, 0.55);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  color: #f1f5ef;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.glass h1, .glass h2, .glass h3 {
+  color: #fff;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+.glass a { color: #e8f0e6; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Floating control panel, top-left. */
+.panel-float {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 288px;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  z-index: 5;
+  padding: 16px 18px;
+}
+
+/* Vertical icon rail, top-right (like zoom.earth's right-side tools). */
+.rail {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 5;
+  display: grid;
+  gap: 8px;
+}
+.rail button {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  font-size: 19px;
+  border-radius: 50%;
+  background: rgba(22, 28, 24, 0.55);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  color: #f1f5ef;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.rail button svg { width: 22px; height: 22px; display: block; }
+.rail button.active { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); color: #fff; }
+
+/* Collapsible sections — plain text headers with a chevron, no boxes. */
+.glass .section-head,
+.section-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  padding: 10px 2px;
+  cursor: pointer;
+  transition: opacity 140ms ease;
+}
+.glass .section-head:hover,
+.section-head:hover { opacity: 0.8; background: none !important; }
+/* Smooth expand/collapse: animate the grid-rows trick for auto height. */
+.section-body {
+  display: grid;
+  grid-template-rows: 1fr;
+  gap: 12px;
+  padding: 0 2px 10px;
+  animation: section-in 220ms ease both;
+}
+@keyframes section-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Refined sliders: slim track, soft thumb. */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.22);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; border: none; box-shadow: 0 1px 4px rgba(0,0,0,0.4); cursor: pointer;
+}
+
+/* Smooth, purposeful entrance for floating glass surfaces. */
+@keyframes glass-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.panel-float, .legend, .lang-menu, .table-btn, .zoom-pill, .sources-float { animation: glass-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Rail + buttons: soft state transitions. */
+.rail button { transition: background 160ms ease, transform 120ms ease, color 160ms ease; }
+.rail button:active { transform: scale(0.94); }
+input[type="range"]::-webkit-slider-thumb { transition: transform 120ms ease; }
+input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-float, .legend, .lang-menu, .table-btn, .zoom-pill, .map-credit, .sources-float, .section-body { animation: none; }
+  .rail button, input[type="range"]::-webkit-slider-thumb { transition: none; }
+}
+
+/* Circular table toggle, bottom-right — same size as the rail buttons, sitting
+   directly above the zoom pill. */
+.table-btn {
+  position: absolute;
+  right: 16px;
+  bottom: 148px;
+  z-index: 6;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+}
+.table-btn svg { width: 22px; height: 22px; display: block; }
+.table-btn.active { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); color: #fff; }
+
+/* Vertical zoom + recenter pill, bottom-right. One rounded capsule holding
+   fit-to-city, zoom in, zoom out — like the reference. */
+.zoom-pill {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  z-index: 6;
+  width: 46px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  gap: 2px;
+  border-radius: 23px;
+}
+.glass .zoom-pill button,
+.zoom-pill button {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 50%;
+  color: #f1f5ef;
+  transition: background 160ms ease, transform 120ms ease;
+}
+.glass .zoom-pill button:hover,
+.zoom-pill button:hover { background: rgba(255,255,255,0.16) !important; }
+.zoom-pill button:active { transform: scale(0.92); }
+.zoom-pill button svg { width: 20px; height: 20px; display: block; }
+
+/* Rail + table + zoom hover labels (custom tooltip in the UI style). */
+.rail button[data-label],
+.table-btn[data-label],
+.zoom-pill button[data-label] { position: relative; }
+.rail button[data-label]::after,
+.table-btn[data-label]::after,
+.zoom-pill button[data-label]::after {
+  content: attr(data-label);
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  white-space: nowrap;
+  background: rgba(22, 28, 24, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: #f1f5ef;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+.rail button[data-label]:hover::after,
+.table-btn[data-label]:hover::after,
+.zoom-pill button[data-label]:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rail button[data-label]::after,
+  .table-btn[data-label]::after,
+  .zoom-pill button[data-label]::after { transition: none; }
+}
+
+/* Language menu (opens from the rail globe). */
+.lang-menu {
+  position: absolute;
+  top: 16px;
+  right: 76px;
+  z-index: 7;
+  padding: 8px;
+  display: grid;
+  gap: 2px;
+  min-width: 180px;
+}
+.glass .lang-menu button,
+.lang-menu button {
+  width: 100%;
+  text-align: left;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #f1f5ef;
+  padding: 9px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.glass .lang-menu button:hover,
+.lang-menu button:hover { background: rgba(255,255,255,0.12) !important; }
+.glass .lang-menu button.active,
+.lang-menu button.active { background: rgba(255,255,255,0.2) !important; color: #fff; }
+
+/* Shade legend, bottom-left. */
+.legend {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 5;
+  padding: 10px 12px;
+  font-size: 12px;
+  display: grid;
+  gap: 6px;
+}
+.legend .bar {
+  height: 10px;
+  width: 180px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #d73027, #fc8d59, #fee08b, #91cf60, #1a9850);
+}
+.legend .ends { display: flex; justify-content: space-between; }
+
+/* Glass panels keep inputs legible on dark. */
+.glass input[type="range"] { accent-color: #ffffff; }
+.glass button {
+  color: #eef2ec;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  transition: background 150ms ease, border-color 150ms ease, transform 100ms ease;
+}
+.glass button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.34);
+}
+.glass button:active { transform: scale(0.97); }
+.glass button:focus-visible { outline: 2px solid rgba(255,255,255,0.4); outline-offset: 2px; }
+.glass button.primary {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-weight: 600;
+}
+.glass button.primary:hover { background: rgba(255, 255, 255, 0.24); }
+.glass fieldset { border-color: rgba(255, 255, 255, 0.18); }
+
+/* Warning card entrance. */
+[role="alertdialog"].glass { animation: warn-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes warn-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [role="alertdialog"].glass { animation: none; }
+  .glass button { transition: none; }
+}
+
+/* City search bar — glass input with a magnifier button on the right. */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 10px 0 4px;
+  padding: 2px 2px 2px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transition: border-color 160ms ease, background 160ms ease;
+}
+.search-bar:focus-within {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
+}
+.search-bar input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: #f1f5ef;
+  font: inherit;
+  font-size: 13.5px;
+  padding: 8px 0;
+}
+.search-bar input::placeholder { color: rgba(241, 245, 239, 0.55); }
+.glass .search-bar button,
+.search-bar button {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 10px;
+  color: #f1f5ef;
+}
+.glass .search-bar button:hover,
+.search-bar button:hover { background: rgba(255,255,255,0.14) !important; }
+.search-bar input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+/* Town picker reuses the search-bar glass shell, with a native <select>. */
+.town-picker { padding-right: 10px; }
+.town-picker select {
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  outline: none;
+  color: #f1f5ef;
+  font: inherit;
+  font-size: 13.5px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+.town-picker select option { color: #111; }
+.town-picker .pick-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  color: rgba(241, 245, 239, 0.8);
+  pointer-events: none;
+}
+
+/* Map attribution — bottom-center, subtle glass. */
+.map-credit {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  border-radius: 999px;
+  opacity: 0.9;
+}
+.map-credit a { color: #e8f0e6; text-decoration: none; }
+.map-credit a:hover { text-decoration: underline; }
+/* Keep horizontal centering during the entrance (a shared glass-in drops the
+   translateX(-50%), which is what nudged the credit right). */
+.map-credit { animation: credit-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes credit-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-credit { animation: none; }
+}
+
+/* Live square-footage label, centered on the selection (centroid). */
+.area-sqft {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 8;
+  padding: 5px 11px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 999px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Tip that follows the cursor while drawing a selection. */
+.draw-tip {
+  position: absolute;
+  z-index: 9;
+  padding: 6px 11px;
+  font-size: 12.5px;
+  border-radius: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.draw-tip strong { font-weight: 700; }

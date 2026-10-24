@@ -1,0 +1,31 @@
+import { chromium } from "playwright";
+const DIR = process.env.SHOT_DIR || "/tmp";
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1360, height: 860 } });
+const errors = [];
+page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+page.on("pageerror", (e) => errors.push(String(e)));
+await page.goto("http://127.0.0.1:5173/", { waitUntil: "domcontentloaded" });
+await page.waitForTimeout(2500);
+await page.getByRole("button", { name: /Area/ }).first().click();
+await page.waitForTimeout(250);
+await page.getByRole("button", { name: /Select an area/i }).click();
+await page.waitForTimeout(250);
+const canvas = page.locator("canvas").first();
+await canvas.click({ position: { x: 640, y: 340 } });
+await canvas.click({ position: { x: 820, y: 350 } });
+await canvas.click({ position: { x: 770, y: 500 } });
+await page.mouse.move(700, 420);
+await page.waitForTimeout(400);
+await page.screenshot({ path: `${DIR}/ui-draw2.png` });
+// Finish the box (double-click) then zoom in and verify the label tracks.
+await canvas.dblclick({ position: { x: 770, y: 500 } });
+await page.waitForTimeout(500);
+// Zoom in twice using the pill + button.
+await page.locator(".zoom-pill button").nth(1).click();
+await page.waitForTimeout(500);
+await page.locator(".zoom-pill button").nth(1).click();
+await page.waitForTimeout(700);
+await page.screenshot({ path: `${DIR}/ui-zoomed.png` });
+console.log("ERRORS:" + JSON.stringify(errors));
+await browser.close();

@@ -1,0 +1,59 @@
+{
+  "sources": [
+    {
+      "name": "Overture Maps — buildings",
+      "agency": "Overture Maps Foundation",
+      "url": "https://registry.opendata.aws/overture/",
+      "license": "ODbL (building footprints)",
+      "accessed": "2026-10-24",
+      "used_for": "Building footprints inside the Chelsea bounding box.",
+      "cannot_tell_us": "Building use, occupancy, or who lives there. Footprint only, no owner."
+    },
+    {
+      "name": "Overture Maps — transportation",
+      "agency": "Overture Maps Foundation",
+      "url": "https://registry.opendata.aws/overture/",
+      "license": "ODbL",
+      "accessed": "2026-10-24",
+      "used_for": "Road segments, so candidate tree spots keep a setback off roads.",
+      "cannot_tell_us": "Road width, sidewalk presence, or utility conflicts underground."
+    },
+    {
+      "name": "MassGIS 2020 Environmental Justice block groups",
+      "agency": "MassGIS (Commonwealth of Massachusetts)",
+      "url": "https://www.mass.gov/info-details/massgis-data-2020-environmental-justice-populations",
+      "license": "See MassGIS terms of use",
+      "accessed": "2026-10-18",
+      "used_for": "Equity profile of the demo town (minority %, limited-English %, income) and EJ flag.",
+      "cannot_tell_us": "This uploaded extract has NO geometry — attribute rows by municipality only, so block-group boundaries cannot be mapped from it."
+    },
+    {
+      "name": "MassGIS electric utility by town",
+      "agency": "MassGIS (Commonwealth of Massachusetts)",
+      "url": "https://arcgisserver.digital.mass.gov/arcgisserver/rest/services/AGOL/ElectricityProviders/MapServer/0",
+      "license": "See MassGIS terms of use",
+      "accessed": "2026-10-18",
+      "used_for": "Which electric utility serves the demo town.",
+      "cannot_tell_us": "Rates, per-household usage, or energy burden. Utility name only; geometry omitted."
+    },
+    {
+      "name": "DOE LEAD Tool",
+      "agency": "U.S. Department of Energy",
+      "url": "https://www.energy.gov/scep/slsc/lead-tool",
+      "license": "U.S. Government public data",
+      "accessed": "2026-10-24",
+      "used_for": "Energy-burden context by census tract (planned; not yet wired into the pipeline).",
+      "cannot_tell_us": "Individual household bills. Modeled averages only."
+    },
+    {
+      "name": "Existing street trees (city inventories)",
+      "agency": "Municipal GIS / MassGIS Data Hub",
+      "url": "https://gis.data.mass.gov/search?q=street%20trees",
+      "license": "Varies by municipality",
+      "accessed": "2026-10-24",
+      "used_for": "Avoid planting where a public tree already stands (when a city publishes an inventory).",
+      "cannot_tell_us": "Chelsea has no published street-tree inventory found. Cambridge and Cape Cod do. Treecast can load any city's tree layer to avoid existing trees; for Chelsea this layer is currently empty."
+    }
+  ],
+  "note": "Savings and scores shown in Treecast are modeled estimates, not measurements. See src/optimizer/coefficients.ts for every coefficient and its source or ASSUMPTION tag."
+}
