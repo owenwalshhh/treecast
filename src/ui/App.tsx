@@ -20,7 +20,7 @@ import { ResidentView } from "./ResidentView";
 import { PlanTable } from "./PlanTable";
 import { WhyHere } from "./WhyHere";
 import { SourcesPanel } from "./SourcesPanel";
-import { SunIcon, InfoIcon, GlobeIcon, WarnIcon, TableIcon, PlusIcon, MinusIcon, FitIcon, RegionGlobeIcon } from "./icons";
+import { SunIcon, InfoIcon, GlobeIcon, WarnIcon, TableIcon, PlusIcon, MinusIcon, FitIcon, RegionGlobeIcon, Chevron } from "./icons";
 import { t, LANGUAGES, type Lang } from "../i18n/strings";
 import { treeName } from "./describe";
 
@@ -108,6 +108,7 @@ export function App() {
   }
 
   const [showShade, setShowShade] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(true);
   const [showSources, setShowSources] = useState(false);
   const [showTable, setShowTable] = useState(false);
   const [showLang, setShowLang] = useState(false);
@@ -178,11 +179,22 @@ export function App() {
       </div>
 
       {/* Floating control panel, top-left — collapsible sections. */}
-      <div className="panel-float glass">
-        <h1 style={{ margin: 0, fontSize: 21, display: "flex", alignItems: "center", gap: 8 }}>
-          <img src="/logo.png" alt="" width={28} height={28} style={{ display: "block" }} />
-          {t("appTitle", lang)}
-        </h1>
+      <div className={`panel-float glass ${panelOpen ? "panel-open" : "panel-collapsed"}`}>
+        <button
+          type="button"
+          className="panel-header"
+          onClick={() => setPanelOpen((v) => !v)}
+          aria-expanded={panelOpen}
+        >
+          <h1 style={{ margin: 0, fontSize: 21, display: "flex", alignItems: "center", gap: 8 }}>
+            <img src="/logo.png" alt="" width={28} height={28} style={{ display: "block" }} />
+            {t("appTitle", lang)}
+          </h1>
+          <span className="panel-chevron" aria-hidden="true">
+            <Chevron open={panelOpen} />
+          </span>
+        </button>
+        <div className="panel-body">
         <p style={{ margin: "2px 0 0", fontSize: 12, opacity: 0.7, fontWeight: 500 }}>
           {t("subheading", lang)}
         </p>
@@ -281,6 +293,7 @@ export function App() {
               </span>
             </label>
           </Section>
+        </div>
         </div>
       </div>
 

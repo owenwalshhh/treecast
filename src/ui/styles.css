@@ -173,6 +173,25 @@ tbody tr:last-child { border-bottom: none; }
 .rail button svg { width: 22px; height: 22px; display: block; }
 .rail button.active { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); color: #fff; }
 
+/* Panel header: a flush, chromeless button. On desktop it's just the title;
+   the chevron only appears on mobile, where the body can collapse. */
+.panel-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: inherit;
+  cursor: default;
+  text-align: left;
+}
+.panel-chevron { display: none; }
+.panel-body { display: block; }
+
 /* Collapsible sections — plain text headers with a chevron, no boxes. */
 .glass .section-head,
 .section-head {
@@ -707,6 +726,12 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
     max-height: 46vh;
     padding: 12px 14px;
   }
+  /* On mobile the header is a tap target with a chevron, and the body
+     collapses so only the title bar shows — keeps the map visible. */
+  .panel-header { cursor: pointer; }
+  .panel-chevron { display: inline-flex; opacity: 0.7; }
+  .panel-collapsed { max-height: none; }
+  .panel-collapsed .panel-body { display: none; }
   /* Icon rail: smaller buttons, tucked to the right edge, below the panel. */
   .rail {
     top: auto;
