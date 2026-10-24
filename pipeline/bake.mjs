@@ -19,7 +19,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { dirname, join, isAbsolute, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -27,7 +27,15 @@ const ROOT = join(__dirname, "..");
 const PIPE = join(ROOT, "pipeline");
 const RAW = join(ROOT, "data", "raw");
 const DATA = join(ROOT, "public", "data");
-const DUCKDB = process.env.DUCKDB || "duckdb";
+// Resolve the DuckDB binary. A relative path (e.g. "duckdb\duckdb.exe") is
+// resolved against the current working directory so Windows can find it even
+// when the bake runs from the project folder. A bare "duckdb" is left as-is so
+// PATH lookup still works.
+const rawDuck = process.env.DUCKDB || "duckdb";
+const DUCKDB =
+  rawDuck !== "duckdb" && !isAbsolute(rawDuck) && (rawDuck.includes("/") || rawDuck.includes("\\"))
+    ? resolve(process.cwd(), rawDuck)
+    : rawDuck;
 const MARGIN = process.env.MARGIN || "0.004";
 
 const slugify = (s) =>
