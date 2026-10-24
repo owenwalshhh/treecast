@@ -117,6 +117,10 @@ export const STRINGS = {
   overviewListTitle: { en: "Inner Core towns", es: "Pueblos del Inner Core" },
   overviewOpen: { en: "Open this town", es: "Abrir este pueblo" },
   overviewNotBuilt: { en: "not built yet", es: "sin construir" },
+  tableEmpty: {
+    en: "Generate a tree placement first — press Optimize.",
+    es: "Primero genera una ubicación de árboles — pulsa Optimizar.",
+  },
   reason_westBest: {
     en: "West/southwest side: the best spot. Shade here blocks hot summer afternoon sun.",
     es: "Lado oeste/suroeste: el mejor lugar. La sombra bloquea el sol caliente de la tarde en verano.",

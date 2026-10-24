@@ -292,18 +292,16 @@ export function App() {
         >
           <GlobeIcon />
         </button>
-        {activePlan && (
-          <button
-            type="button"
-            className={showTable ? "active" : ""}
-            data-label={t("tableView", lang)}
-            title={t("tableView", lang)}
-            aria-pressed={showTable}
-            onClick={() => setShowTable((v) => !v)}
-          >
-            <TableIcon />
-          </button>
-        )}
+        <button
+          type="button"
+          className={showTable ? "active" : ""}
+          data-label={t("tableView", lang)}
+          title={t("tableView", lang)}
+          aria-pressed={showTable}
+          onClick={() => setShowTable((v) => !v)}
+        >
+          <TableIcon />
+        </button>
         <button
           type="button"
           className={showSources ? "active" : ""}
@@ -405,6 +403,36 @@ export function App() {
           }}
         >
           <PlanTable plan={activePlan} lang={lang} onPick={setPickedId} />
+        </div>
+      )}
+
+      {/* Empty state — table pressed but no plan yet. */}
+      {showTable && !activePlan && (
+        <div
+          className="glass"
+          role="status"
+          style={{
+            position: "fixed",
+            left: 16,
+            right: 78,
+            bottom: 16,
+            padding: "14px 16px",
+            zIndex: 6,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+          }}
+        >
+          <span>{t("tableEmpty", lang)}</span>
+          <button
+            type="button"
+            aria-label={t("whyClose", lang)}
+            onClick={() => setShowTable(false)}
+            style={{ border: "none", background: "none", fontSize: 18, cursor: "pointer", color: "inherit" }}
+          >
+            ✕
+          </button>
         </div>
       )}
 
