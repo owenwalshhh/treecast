@@ -84,9 +84,6 @@ export function PlanTable({ plan, lang, onPick }: Props) {
 
   return (
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
-      <caption style={{ textAlign: "left", padding: "4px 0" }}>
-        {t("tableView", lang)} — {t("treesPlaced", lang)}: {rows.length}
-      </caption>
       <thead>
         <tr>
           {header("id", t("colId", lang))}
@@ -94,7 +91,7 @@ export function PlanTable({ plan, lang, onPick }: Props) {
           <th scope="col" style={{ padding: "4px 8px" }}>{t("colLocation", lang)}</th>
           {header("leaf", t("colLeaf", lang))}
           {header("score", t("colScore", lang))}
-          {onPick && <th scope="col" style={{ padding: "4px 8px" }}>{t("whyHere", lang)}</th>}
+          {onPick && <th scope="col" style={{ padding: "4px 8px" }} aria-label={t("whyHere", lang)} />}
         </tr>
       </thead>
       <tbody>
@@ -110,7 +107,7 @@ export function PlanTable({ plan, lang, onPick }: Props) {
             <td style={{ padding: "4px 8px" }}>
               {leafLabel(tree.site.leafType)}
             </td>
-            <td style={{ padding: "4px 8px" }}>{tree.score.toFixed(3)}</td>
+            <td style={{ padding: "4px 8px" }}>{Math.round(tree.score * 100)}</td>
             {onPick && (
               <td style={{ padding: "4px 8px" }}>
                 <button

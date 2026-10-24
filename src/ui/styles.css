@@ -106,7 +106,8 @@ input[type="range"] { width: 100%; accent-color: var(--tree); }
 /* Simple table polish. */
 table { border-collapse: collapse; width: 100%; }
 th, td { text-align: left; }
-tbody tr:nth-child(odd) { background: color-mix(in srgb, var(--panel-2) 50%, transparent); }
+tbody tr { background: none; border-bottom: 1px solid rgba(255, 255, 255, 0.14); }
+tbody tr:last-child { border-bottom: none; }
 
 /* ---- zoom.earth-style shell ---- */
 
