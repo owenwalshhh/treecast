@@ -15,5 +15,5 @@ dist/
 # TS build cache
 tsconfig.tsbuildinfo
 
-# Kiro Crew CLI settings (not project — keeps the rest of .kiro tracked)
-.kiro/settings/
+# pipeline runtime logs
+pipeline/bake.log
