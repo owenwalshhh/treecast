@@ -781,14 +781,27 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
     max-height: 60vh;
     z-index: 31;
   }
-  /* Shade legend: smaller and out of the way, bottom-left. */
+  /* Shade legend: smaller and out of the way, bottom-left, bar fits the box. */
   .legend {
     left: 8px;
     bottom: 10px;
     font-size: 11px;
     padding: 8px 10px;
-    max-width: 48vw;
+    max-width: 60vw;
   }
+  .legend .bar { width: 100%; min-width: 120px; }
   /* Resident banner stays full-width and tappable. */
   .resident-banner { font-size: 13px; }
+  /* Why-here popup (maplibre) — cap width so it fits a phone. */
+  .maplibregl-popup-content {
+    max-width: calc(100vw - 32px) !important;
+    font-size: 13px;
+  }
+  /* Table view + any centered glass panel: fit the viewport, scroll inside. */
+  .table-wrap, .plan-table-wrap {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: 60vh;
+    overflow: auto;
+  }
 }
