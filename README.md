@@ -89,6 +89,8 @@ Every number shown to a user is a **modeled estimate**, labeled as such, and
 traces back to one of these sources. No personal data is shipped — building IDs
 only, never owner names.
 
+# CURRENTLY, ONLY CHELSEA AND EVERETT ARE SUPPORTED!!!
+
 ## Run it
 
 ```bash
