@@ -5,7 +5,7 @@
  * user can read comes from here, keyed by a short name.
  */
 
-export type Lang = "en" | "es" | "pt" | "fr" | "ht";
+export type Lang = "en" | "es" | "pt" | "fr" | "ht" | "zh" | "vi" | "ar" | "cv" | "km";
 
 /**
  * Selectable languages, each labelled in its OWN language (native name). These
@@ -24,6 +24,11 @@ export const LANGUAGES: { code: Lang; native: string }[] = [
   { code: "pt", native: "Português" },
   { code: "fr", native: "Français" },
   { code: "ht", native: "Kreyòl Ayisyen" },
+  { code: "zh", native: "中文" },
+  { code: "vi", native: "Tiếng Việt" },
+  { code: "ar", native: "العربية" },
+  { code: "cv", native: "Kriolu" },
+  { code: "km", native: "ខ្មែរ" },
 ];
 
 export const STRINGS = {
@@ -116,6 +121,8 @@ export const STRINGS = {
     es: "Número de grupos marcados de JA 2020 (MassGIS). Más oscuro = más.",
   },
   overviewListTitle: { en: "Inner Core towns", es: "Pueblos del Inner Core" },
+  overviewTitle: { en: "All of Inner Core", es: "Todo el Inner Core" },
+  overviewClose: { en: "Close overview", es: "Cerrar vista general" },
   overviewOpen: { en: "Open this town", es: "Abrir este pueblo" },
   overviewNotBuilt: { en: "not built yet", es: "sin construir" },
   tableEmpty: {

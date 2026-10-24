@@ -43,13 +43,23 @@ const BUCKETS: { max: number; color: string; label: string }[] = [
 export function RegionOverview({
   lang,
   onOpenTown,
+  onClose,
 }: {
   lang: Lang;
   onOpenTown: (slug: string) => void;
+  onClose?: () => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [towns, setTowns] = useState<TownOutlineProps[]>([]);
+
+  // Escape closes the overview (keyboard-accessible dismiss).
+  useEffect(() => {
+    if (!onClose) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
   useEffect(() => {
     let cancelled = false;
@@ -146,6 +156,34 @@ export function RegionOverview({
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div ref={containerRef} aria-hidden="true" style={{ width: "100%", height: "100%", minHeight: 420 }} />
+
+      {/* Title + close — always visible so the overview can be dismissed. */}
+      <div
+        className="glass"
+        style={{
+          position: "absolute", top: 16, left: 16, zIndex: 7, padding: "8px 10px 8px 12px",
+          display: "flex", alignItems: "center", gap: 10,
+        }}
+      >
+        <img src="/logo.png" alt="" width={20} height={20} style={{ display: "block" }} />
+        <span style={{ fontWeight: 600, fontSize: 14 }}>{t("overviewTitle", lang)}</span>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("overviewClose", lang)}
+            title={t("overviewClose", lang)}
+            style={{
+              marginLeft: 4, width: 28, height: 28, borderRadius: 999, border: "none",
+              cursor: "pointer", fontSize: 16, lineHeight: 1,
+              background: "rgba(127,127,127,0.18)", color: "inherit",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+            }}
+          >
+            ✕
+          </button>
+        )}
+      </div>
 
       {/* Legend. */}
       <div

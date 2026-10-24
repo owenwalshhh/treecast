@@ -354,6 +354,8 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   display: grid;
   gap: 2px;
   min-width: 180px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
 }
 .glass .lang-menu button,
 .lang-menu button {
@@ -693,3 +695,44 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   transition: background 150ms ease;
 }
 .resident-banner:hover { background: rgba(255, 255, 255, 0.16); }
+
+/* --- Mobile (phones): keep the map usable, don't let panels cover it. --- */
+@media (max-width: 640px) {
+  /* Planner panel: full width across the top, capped height, scrolls. */
+  .panel-float {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-height: 46vh;
+    padding: 12px 14px;
+  }
+  /* Icon rail: smaller buttons, tucked to the right edge, below the panel. */
+  .rail {
+    top: auto;
+    bottom: 10px;
+    right: 8px;
+    gap: 6px;
+  }
+  .rail button { width: 40px; height: 40px; }
+  .rail button svg { width: 20px; height: 20px; }
+  /* Language menu: anchor to the right edge, scroll within the viewport. */
+  .lang-menu {
+    top: auto;
+    bottom: 10px;
+    right: 56px;
+    left: 8px;
+    min-width: 0;
+    max-height: 60vh;
+  }
+  /* Shade legend: smaller and out of the way, bottom-left. */
+  .legend {
+    left: 8px;
+    bottom: 10px;
+    font-size: 11px;
+    padding: 8px 10px;
+    max-width: 48vw;
+  }
+  /* Resident banner stays full-width and tappable. */
+  .resident-banner { font-size: 13px; }
+}

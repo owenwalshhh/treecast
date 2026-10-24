@@ -145,7 +145,10 @@ export function ResidentView({ candidates, center, lang, onExit }: Props) {
       {/* Top card: title + how to use. */}
       <div className="glass resident-top">
         <div className="resident-head">
-          <strong>🌳 {t("appTitle", lang)}</strong>
+          <strong style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <img src="/logo.png" alt="" width={22} height={22} style={{ display: "block" }} />
+            {t("appTitle", lang)}
+          </strong>
           <button type="button" className="resident-exit" onClick={onExit} aria-label={t("residentExit", lang)}>
             ✕
           </button>

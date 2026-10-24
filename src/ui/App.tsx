@@ -152,7 +152,7 @@ export function App() {
       {/* Full-bleed map underneath everything. */}
       <div className="map-full">
         {overview ? (
-          <RegionOverview lang={lang} onOpenTown={pickTown} />
+          <RegionOverview lang={lang} onOpenTown={pickTown} onClose={() => setOverview(false)} />
         ) : (
           <PlannerMap
             candidates={candidates}
@@ -179,7 +179,10 @@ export function App() {
 
       {/* Floating control panel, top-left — collapsible sections. */}
       <div className="panel-float glass">
-        <h1 style={{ margin: 0, fontSize: 21 }}>🌳 {t("appTitle", lang)}</h1>
+        <h1 style={{ margin: 0, fontSize: 21, display: "flex", alignItems: "center", gap: 8 }}>
+          <img src="/logo.png" alt="" width={28} height={28} style={{ display: "block" }} />
+          {t("appTitle", lang)}
+        </h1>
         <p style={{ margin: "2px 0 0", fontSize: 12, opacity: 0.7, fontWeight: 500 }}>
           {t("subheading", lang)}
         </p>
