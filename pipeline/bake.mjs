@@ -55,10 +55,33 @@ const buildList = JSON.parse(readFileSync(join(PIPE, "towns.json"), "utf8")).tow
 const towns = requested.length ? requested : buildList;
 
 /** Render a SQL template's ${VARS} and run it through duckdb via stdin. */
+// Does this DuckDB accept `geometry_always_xy`? v2.0 REQUIRES it for GDAL
+// exports with an SRS and still enforces the axis-order guard; v1.x does not
+// know the setting. Probe once and cache, so the same SQL runs on both.
+let _xySupported = null;
+function supportsXy() {
+  if (_xySupported !== null) return _xySupported;
+  try {
+    execFileSync(DUCKDB, [], {
+      input: "INSTALL spatial; LOAD spatial; SET geometry_always_xy = true; SELECT 1;",
+      stdio: ["pipe", "ignore", "ignore"],
+    });
+    _xySupported = true;
+  } catch {
+    _xySupported = false;
+  }
+  return _xySupported;
+}
+
 function runSql(file, vars) {
   let sql = readFileSync(join(PIPE, file), "utf8");
   for (const [k, v] of Object.entries(vars)) {
     sql = sql.split("${" + k + "}").join(String(v));
+  }
+  // On DuckDB v2.0+, enable xy axis order so GDAL GeoJSON export is correct and
+  // the axis-order guard does not error. Injected after the spatial LOAD.
+  if (supportsXy() && /LOAD spatial;/.test(sql)) {
+    sql = sql.replace(/LOAD spatial;/, "LOAD spatial;\nSET geometry_always_xy = true;");
   }
   // duckdb reads the SQL from stdin — portable, no temp file needed.
   execFileSync(DUCKDB, [], { input: sql, stdio: ["pipe", "inherit", "inherit"] });
