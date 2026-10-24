@@ -129,6 +129,10 @@ export function App() {
   }, [flyToken, data, mapControls]);
 
   const activePlan = optimized;
+  const activeTown = towns.find((t) => t.slug === activeSlug) ?? null;
+  // A town with no candidate/shade data yet can still show buildings + equity;
+  // it just can't run the planner. Treat unknown (no flag) as ready.
+  const plannerReady = activeTown ? activeTown.hasPlanner !== false : true;
   const pickedTree =
     pickedId != null
       ? activePlan?.trees.find((t) => t.site.id === pickedId) ?? null
@@ -209,22 +213,30 @@ export function App() {
 
         <div style={{ marginTop: 6 }}>
           <Section title={t("sectionPlan", lang)} defaultOpen>
-            <Controls
-              lang={lang}
-              budget={budget}
-              equityWeight={equityWeight}
-              optimizing={optimizing}
-              onBudget={setBudget}
-              onEquity={setEquityWeight}
-              onOptimize={runOptimize}
-            />
-            {activePlan && (
-              <div style={{ fontSize: 13, opacity: 0.9 }}>
-                {t("planOptimized", lang)} — {t("treesPlaced", lang)}:{" "}
-                <strong>{activePlan.trees.length}</strong> ·{" "}
-                {t("totalScore", lang)}:{" "}
-                <strong>{activePlan.totalScore.toFixed(2)}</strong>
-              </div>
+            {plannerReady ? (
+              <>
+                <Controls
+                  lang={lang}
+                  budget={budget}
+                  equityWeight={equityWeight}
+                  optimizing={optimizing}
+                  onBudget={setBudget}
+                  onEquity={setEquityWeight}
+                  onOptimize={runOptimize}
+                />
+                {activePlan && (
+                  <div style={{ fontSize: 13, opacity: 0.9 }}>
+                    {t("planOptimized", lang)} — {t("treesPlaced", lang)}:{" "}
+                    <strong>{activePlan.trees.length}</strong> ·{" "}
+                    {t("totalScore", lang)}:{" "}
+                    <strong>{activePlan.totalScore.toFixed(2)}</strong>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p style={{ fontSize: 13, opacity: 0.8, margin: "4px 0" }}>
+                {t("plannerComingSoon", lang)}
+              </p>
             )}
           </Section>
 
@@ -293,6 +305,11 @@ export function App() {
               </span>
             </label>
           </Section>
+        </div>
+        <div className="panel-credit">
+          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
+            {t("mapCredit", lang)}
+          </a>
         </div>
         </div>
       </div>

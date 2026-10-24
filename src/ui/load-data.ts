@@ -69,6 +69,8 @@ export interface TownInfo {
   base: string;
   buildings?: number;
   candidates?: number;
+  /** True when the town has candidate-sites + shade (the full planner/shade). */
+  hasPlanner?: boolean;
   bytes?: number;
 }
 
@@ -86,6 +88,7 @@ export async function loadTowns(): Promise<TownInfo[]> {
     base: String(t.base ?? `/data/${t.slug}`),
     buildings: t.buildings,
     candidates: t.candidates,
+    hasPlanner: t.hasPlanner !== false && (t.hasPlanner === true || (t.candidates ?? 0) > 0),
     bytes: t.bytes,
   }));
 }

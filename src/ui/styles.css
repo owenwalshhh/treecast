@@ -191,6 +191,7 @@ tbody tr:last-child { border-bottom: none; }
 }
 .panel-chevron { display: none; }
 .panel-body { display: block; }
+.panel-credit { display: none; }
 
 /* Collapsible sections — plain text headers with a chevron, no boxes. */
 .glass .section-head,
@@ -732,7 +733,9 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 
 /* --- Mobile (phones): keep the map usable, don't let panels cover it. --- */
 @media (max-width: 640px) {
-  /* Planner panel: full width across the top, capped height, scrolls. */
+  /* Planner panel: full width across the top, capped height, scrolls.
+     Layered ABOVE the rail so the expanded panel covers the buttons — the
+     user collapses it to reach them. */
   .panel-float {
     top: 8px;
     left: 8px;
@@ -740,21 +743,31 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
     width: auto;
     max-height: 46vh;
     padding: 12px 14px;
+    z-index: 30;
   }
+  /* OSM credit lives inside the panel on mobile; hide the floating chip. */
+  .panel-credit {
+    display: block;
+    margin-top: 10px;
+    font-size: 11px;
+    opacity: 0.7;
+  }
+  .panel-credit a { color: inherit; }
+  .map-credit { display: none; }
   /* On mobile the header is a tap target with a chevron, and the body
      collapses so only the title bar shows — keeps the map visible. */
   .panel-header { cursor: pointer; }
   .panel-chevron { display: inline-flex; opacity: 0.7; }
   .panel-collapsed { max-height: none; }
   .panel-collapsed .panel-body { display: none; }
-  /* Icon rail: smaller buttons, top-right. Stays at the TOP so it doesn't
-     collide with the zoom pill + view/satellite toggles that live bottom-right.
-     Sits just below the collapsed panel's title bar. */
+  /* Icon rail: smaller buttons, top-right. The expanded panel layers over it;
+     collapse the panel to reach these. */
   .rail {
     top: 64px;
     right: 8px;
     bottom: auto;
     gap: 6px;
+    z-index: 10;
   }
   .rail button { width: 40px; height: 40px; }
   .rail button svg { width: 20px; height: 20px; }
@@ -766,6 +779,7 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
     left: 8px;
     min-width: 0;
     max-height: 60vh;
+    z-index: 31;
   }
   /* Shade legend: smaller and out of the way, bottom-left. */
   .legend {

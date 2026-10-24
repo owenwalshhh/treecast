@@ -291,6 +291,10 @@ export const STRINGS = {
   },
   townLoading: { en: "Loading…", es: "Cargando…" },
   townNoMatch: { en: "No matching city", es: "Ninguna ciudad coincide" },
+  plannerComingSoon: {
+    en: "Buildings and equity are ready for this town. The tree planner and shade are being computed — coming soon.",
+    es: "Los edificios y la equidad están listos para este pueblo. El planificador de árboles y la sombra se están calculando — próximamente.",
+  },
   subheading: {
     en: "Serving Greater Boston",
     es: "Para el Gran Boston",
