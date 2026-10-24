@@ -38,6 +38,14 @@ export function App() {
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [drawing, setDrawing] = useState(false);
   const [area, setArea] = useState<[number, number][] | null>(null);
+
+  // Escape cancels area drawing (a quick way out of the select-area mode).
+  useEffect(() => {
+    if (!drawing) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setDrawing(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [drawing]);
   const [overview, setOverview] = useState(false);
   const [resident, setResident] = useState(false);
 

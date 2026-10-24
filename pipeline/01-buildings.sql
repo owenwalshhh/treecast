@@ -20,7 +20,7 @@ INSTALL spatial;  LOAD spatial;
 SET s3_region = 'us-west-2';
 CREATE SECRET IF NOT EXISTS anon (TYPE s3, PROVIDER config, KEY_ID '', SECRET '', REGION 'us-west-2');
 
-SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');
+${LATEST_SETUP}
 
 -- The town boundary written by 00b-boundary.sql (one feature).
 CREATE OR REPLACE TABLE town_boundary AS

@@ -235,31 +235,45 @@ function buildOne(city) {
   mkdirSync(out, { recursive: true });
   console.log(`\n#### ${city} -> public/data/${slug}/`);
 
-  // 0) bbox + center.
+  // 0) bbox + center. Reuse a prior area.json if present — avoids a per-town
+  // Overture divisions read (the STAC/S3 call that triggers HTTP 429s).
   console.log("  [0/6] bbox…");
-  const rawArea = join(tmpdir(), `tc-area-${slug}.json`);
-  runSql("00-derive-area.sql", { CITY: city, MARGIN, OUT: rawArea.replace(/\\/g, "/") });
-  if (!existsSync(rawArea)) { console.error(`  !! no boundary for ${city}`); return false; }
-  const area = JSON.parse(readFileSync(rawArea, "utf8"));
-  writeFileSync(join(out, "area.json"), JSON.stringify(area, null, 2));
+  const areaOut = join(out, "area.json");
+  let area;
+  if (existsSync(areaOut)) {
+    area = JSON.parse(readFileSync(areaOut, "utf8"));
+  } else {
+    const rawArea = join(tmpdir(), `tc-area-${slug}.json`);
+    runSql("00-derive-area.sql", { CITY: city, MARGIN, OUT: rawArea.replace(/\\/g, "/") });
+    if (!existsSync(rawArea)) { console.error(`  !! no boundary for ${city}`); return false; }
+    area = JSON.parse(readFileSync(rawArea, "utf8"));
+    writeFileSync(areaOut, JSON.stringify(area, null, 2));
+  }
   const { west, south, east, north } = area.bbox;
   const bnd = join(out, "city-boundary.geojson");
 
-  // 1) boundary.
+  // 1) boundary. Reuse the cached boundary file if present (same 429 reason).
   console.log("  [1/6] boundary…");
-  runSql("00b-boundary.sql", { CITY: city, OUT: bnd.replace(/\\/g, "/") });
+  if (!existsSync(bnd)) {
+    runSql("00b-boundary.sql", { CITY: city, OUT: bnd.replace(/\\/g, "/") });
+  }
 
-  // 2) buildings, clipped.
+  // 2) buildings, clipped. Only fetch Overture's STAC 'latest' when actually
+  // reading S3 — a local cache read needs no network (avoids per-town 429s).
   console.log("  [2/6] buildings…");
+  const bSrc = sourceFor("buildings");
+  const bLatest = bSrc.startsWith("s3://") ? "SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');" : "";
   runSql("01-buildings.sql", {
-    WEST: west, SOUTH: south, EAST: east, NORTH: north, SOURCE: sourceFor("buildings"),
+    WEST: west, SOUTH: south, EAST: east, NORTH: north, SOURCE: bSrc, LATEST_SETUP: bLatest,
     BOUNDARY: bnd.replace(/\\/g, "/"), OUT: join(out, "buildings.geojson").replace(/\\/g, "/"),
   });
 
   // 3) roads, clipped.
   console.log("  [3/6] roads…");
+  const rSrc = sourceFor("roads");
+  const rLatest = rSrc.startsWith("s3://") ? "SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');" : "";
   runSql("02-roads.sql", {
-    WEST: west, SOUTH: south, EAST: east, NORTH: north, SOURCE: sourceFor("roads"),
+    WEST: west, SOUTH: south, EAST: east, NORTH: north, SOURCE: rSrc, LATEST_SETUP: rLatest,
     BOUNDARY: bnd.replace(/\\/g, "/"), OUT: join(out, "roads.geojson").replace(/\\/g, "/"),
   });
 
