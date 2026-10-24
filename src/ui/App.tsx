@@ -15,10 +15,12 @@ import { Controls } from "./Controls";
 import { Section } from "./Section";
 import { TownPicker } from "./TownPicker";
 import { PlannerMap } from "./PlannerMap";
+import { RegionOverview } from "./RegionOverview";
+import { ResidentView } from "./ResidentView";
 import { PlanTable } from "./PlanTable";
 import { WhyHere } from "./WhyHere";
 import { SourcesPanel } from "./SourcesPanel";
-import { SunIcon, InfoIcon, GlobeIcon, WarnIcon, TableIcon, PlusIcon, MinusIcon, FitIcon } from "./icons";
+import { SunIcon, InfoIcon, GlobeIcon, WarnIcon, TableIcon, PlusIcon, MinusIcon, FitIcon, RegionGlobeIcon, Chevron } from "./icons";
 import { t, LANGUAGES, type Lang } from "../i18n/strings";
 import { treeName } from "./describe";
 
@@ -36,6 +38,16 @@ export function App() {
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [drawing, setDrawing] = useState(false);
   const [area, setArea] = useState<[number, number][] | null>(null);
+
+  // Escape cancels area drawing (a quick way out of the select-area mode).
+  useEffect(() => {
+    if (!drawing) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setDrawing(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [drawing]);
+  const [overview, setOverview] = useState(false);
+  const [resident, setResident] = useState(false);
 
   // Load the list of built towns once, then load the first town's data.
   useEffect(() => {
@@ -56,7 +68,9 @@ export function App() {
   // fly the map to its bounds (handled by PlannerMap's fitCity once data lands).
   function pickTown(slug: string) {
     const tw = towns.find((t) => t.slug === slug);
-    if (!tw || slug === activeSlug) return;
+    if (!tw) return;
+    setOverview(false);
+    if (slug === activeSlug && data) return; // already loaded and showing
     setActiveSlug(slug);
     setOptimized(null);
     setPickedId(null);
@@ -101,7 +115,8 @@ export function App() {
     }, 300);
   }
 
-  const [showShade, setShowShade] = useState(false);
+  const [showShade, setShowShade] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(true);
   const [showSources, setShowSources] = useState(false);
   const [showTable, setShowTable] = useState(false);
   const [showLang, setShowLang] = useState(false);
@@ -122,6 +137,10 @@ export function App() {
   }, [flyToken, data, mapControls]);
 
   const activePlan = optimized;
+  const activeTown = towns.find((t) => t.slug === activeSlug) ?? null;
+  // A town with no candidate/shade data yet can still show buildings + equity;
+  // it just can't run the planner. Treat unknown (no flag) as ready.
+  const plannerReady = activeTown ? activeTown.hasPlanner !== false : true;
   const pickedTree =
     pickedId != null
       ? activePlan?.trees.find((t) => t.site.id === pickedId) ?? null
@@ -129,33 +148,65 @@ export function App() {
 
   return (
     <div className="app-shell">
+      {resident && data && (
+        <ResidentView
+          candidates={data.candidates}
+          center={data.center}
+          lang={lang}
+          onExit={() => setResident(false)}
+        />
+      )}
+      {/* Top banner: a slim line to open the resident (phone) view. */}
+      {!resident && !overview && (
+        <button type="button" className="resident-banner" onClick={() => setResident(true)}>
+          {t("residentToggle", lang)}
+        </button>
+      )}
       {/* Full-bleed map underneath everything. */}
       <div className="map-full">
-        <PlannerMap
-          candidates={candidates}
-          plan={activePlan}
-          center={data?.center ?? { lng: -71.0331, lat: 42.3918 }}
-          buildings={data?.buildings ?? null}
-          shadeGrid={data?.shadeGrid ?? null}
-          cityBoundary={data?.cityBoundary ?? null}
-          water={data?.water ?? null}
-          showShade={showShade}
-          animationKey={animationKey}
-          year={year}
-          drawing={drawing}
-          area={area}
-          onAreaChange={(ring) => {
-            setArea(ring);
-            setDrawing(false);
-          }}
-          onPick={setPickedId}
-          onReady={setMapControls}
-        />
+        {overview ? (
+          <RegionOverview lang={lang} onOpenTown={pickTown} onClose={() => setOverview(false)} />
+        ) : (
+          <PlannerMap
+            candidates={candidates}
+            plan={activePlan}
+            center={data?.center ?? { lng: -71.0331, lat: 42.3918 }}
+            buildings={data?.buildings ?? null}
+            shadeGrid={data?.shadeGrid ?? null}
+            cityBoundary={data?.cityBoundary ?? null}
+            water={data?.water ?? null}
+            showShade={showShade}
+            animationKey={animationKey}
+            year={year}
+            drawing={drawing}
+            area={area}
+            onAreaChange={(ring) => {
+              setArea(ring);
+              setDrawing(false);
+            }}
+            onPick={setPickedId}
+            onReady={setMapControls}
+          />
+        )}
       </div>
 
       {/* Floating control panel, top-left — collapsible sections. */}
-      <div className="panel-float glass">
-        <h1 style={{ margin: 0, fontSize: 21 }}>🌳 {t("appTitle", lang)}</h1>
+      <div className={`panel-float glass ${panelOpen ? "panel-open" : "panel-collapsed"}`}>
+        <button
+          type="button"
+          className="panel-header"
+          onClick={() => setPanelOpen((v) => !v)}
+          aria-expanded={panelOpen}
+        >
+          <h1 style={{ margin: 0, fontSize: 21, display: "flex", alignItems: "center", gap: 8 }}>
+            <img src="/logo.png" alt="" width={28} height={28} style={{ display: "block" }} />
+            {t("appTitle", lang)}
+          </h1>
+          <span className="panel-chevron" aria-hidden="true">
+            <Chevron open={panelOpen} />
+          </span>
+        </button>
+        <div className="panel-body">
         <p style={{ margin: "2px 0 0", fontSize: 12, opacity: 0.7, fontWeight: 500 }}>
           {t("subheading", lang)}
         </p>
@@ -170,22 +221,30 @@ export function App() {
 
         <div style={{ marginTop: 6 }}>
           <Section title={t("sectionPlan", lang)} defaultOpen>
-            <Controls
-              lang={lang}
-              budget={budget}
-              equityWeight={equityWeight}
-              optimizing={optimizing}
-              onBudget={setBudget}
-              onEquity={setEquityWeight}
-              onOptimize={runOptimize}
-            />
-            {activePlan && (
-              <div style={{ fontSize: 13, opacity: 0.9 }}>
-                {t("planOptimized", lang)} — {t("treesPlaced", lang)}:{" "}
-                <strong>{activePlan.trees.length}</strong> ·{" "}
-                {t("totalScore", lang)}:{" "}
-                <strong>{activePlan.totalScore.toFixed(2)}</strong>
-              </div>
+            {plannerReady ? (
+              <>
+                <Controls
+                  lang={lang}
+                  budget={budget}
+                  equityWeight={equityWeight}
+                  optimizing={optimizing}
+                  onBudget={setBudget}
+                  onEquity={setEquityWeight}
+                  onOptimize={runOptimize}
+                />
+                {activePlan && (
+                  <div style={{ fontSize: 13, opacity: 0.9 }}>
+                    {t("planOptimized", lang)} — {t("treesPlaced", lang)}:{" "}
+                    <strong>{activePlan.trees.length}</strong> ·{" "}
+                    {t("totalScore", lang)}:{" "}
+                    <strong>{activePlan.totalScore.toFixed(2)}</strong>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p style={{ fontSize: 13, opacity: 0.8, margin: "4px 0" }}>
+                {t("plannerComingSoon", lang)}
+              </p>
             )}
           </Section>
 
@@ -194,6 +253,7 @@ export function App() {
               <button
                 type="button"
                 className={!area && !drawing ? "primary" : ""}
+                style={{ flex: 1, minWidth: 0 }}
                 onClick={() => {
                   setArea(null);
                   setDrawing(false);
@@ -206,6 +266,7 @@ export function App() {
               <button
                 type="button"
                 className={drawing ? "primary" : ""}
+                style={{ flex: 1, minWidth: 0 }}
                 onClick={() => {
                   setArea(null);
                   setDrawing(true);
@@ -218,6 +279,7 @@ export function App() {
               {area && (
                 <button
                   type="button"
+                  style={{ flexBasis: "100%" }}
                   onClick={() => {
                     setArea(null);
                     setDrawing(false);
@@ -252,6 +314,12 @@ export function App() {
             </label>
           </Section>
         </div>
+        <div className="panel-credit">
+          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
+            {t("mapCredit", lang)}
+          </a>
+        </div>
+        </div>
       </div>
 
       {/* Icon rail, top-right. */}
@@ -278,6 +346,16 @@ export function App() {
         </button>
         <button
           type="button"
+          className={showTable ? "active" : ""}
+          data-label={t("tableView", lang)}
+          title={t("tableView", lang)}
+          aria-pressed={showTable}
+          onClick={() => setShowTable((v) => !v)}
+        >
+          <TableIcon />
+        </button>
+        <button
+          type="button"
           className={showSources ? "active" : ""}
           data-label={t("sourcesTitle", lang)}
           title={t("sourcesTitle", lang)}
@@ -285,6 +363,16 @@ export function App() {
           onClick={() => setShowSources((v) => !v)}
         >
           <InfoIcon />
+        </button>
+        <button
+          type="button"
+          className={overview ? "active" : ""}
+          data-label={overview ? t("overviewBack", lang) : t("overviewToggle", lang)}
+          title={t("overviewToggle", lang)}
+          aria-pressed={overview}
+          onClick={() => setOverview((v) => !v)}
+        >
+          <RegionGlobeIcon />
         </button>
       </div>
 
@@ -333,20 +421,6 @@ export function App() {
         />
       )}
 
-      {/* Table toggle — circular, same size as the rail buttons, sitting above
-          the zoom pill (bottom-right). */}
-      {activePlan && (
-        <button
-          type="button"
-          className={`table-btn glass ${showTable ? "active" : ""}`}
-          data-label={t("tableView", lang)}
-          aria-label={t("tableView", lang)}
-          onClick={() => setShowTable((v) => !v)}
-        >
-          <TableIcon />
-        </button>
-      )}
-
       {/* Zoom + recenter pill, bottom-right: fit-to-city, zoom in, zoom out. */}
       <div className="zoom-pill glass">
         <button
@@ -375,22 +449,51 @@ export function App() {
         </button>
       </div>
 
-      {/* Table overlay — clears the right-side controls (table button + pill). */}
+      {/* Table overlay — bottom strip, stops left of the right-side controls. */}
       {showTable && activePlan && (
         <div
           className="glass"
           style={{
-            position: "absolute",
+            position: "fixed",
             left: 16,
-            right: 76,
-            bottom: 48,
-            maxHeight: "min(360px, calc(100vh - 120px))",
+            right: 78,
+            bottom: 16,
+            maxHeight: "min(320px, 42vh)",
             overflow: "auto",
             padding: 14,
             zIndex: 6,
           }}
         >
           <PlanTable plan={activePlan} lang={lang} onPick={setPickedId} />
+        </div>
+      )}
+
+      {/* Empty state — table pressed but no plan yet. Same warning card style. */}
+      {showTable && !activePlan && (
+        <div
+          className="glass"
+          role="alertdialog"
+          aria-label={t("tableEmpty", lang)}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "min(340px, calc(100vw - 24px))",
+            padding: 20,
+            zIndex: 20,
+            textAlign: "center",
+          }}
+        >
+          <div style={{ color: "var(--warn)", display: "flex", justifyContent: "center", marginBottom: 8 }}>
+            <WarnIcon size={34} />
+          </div>
+          <p style={{ margin: "0 0 14px", fontSize: 13.5, opacity: 0.85, lineHeight: 1.45 }}>
+            {t("tableEmpty", lang)}
+          </p>
+          <button type="button" className="primary" onClick={() => setShowTable(false)}>
+            {t("warnOk", lang)}
+          </button>
         </div>
       )}
 
@@ -402,7 +505,7 @@ export function App() {
             position: "absolute",
             top: 16,
             right: 76,
-            width: 340,
+            width: "min(340px, calc(100vw - 24px))",
             maxHeight: "calc(100vh - 32px)",
             overflow: "auto",
             zIndex: 7,
@@ -429,7 +532,7 @@ export function App() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 340,
+            width: "min(340px, calc(100vw - 24px))",
             padding: 20,
             zIndex: 20,
             textAlign: "center",

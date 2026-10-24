@@ -17,14 +17,10 @@ INSTALL spatial;  LOAD spatial;
 SET s3_region = 'us-west-2';
 CREATE SECRET IF NOT EXISTS anon (TYPE s3, PROVIDER config, KEY_ID '', SECRET '', REGION 'us-west-2');
 
-SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');
+${LATEST_SETUP}
 
 CREATE OR REPLACE TABLE town_boundary AS
-  SELECT ST_GeomFromGeoJSON(feature->'geometry') AS geom
-  FROM (
-    SELECT unnest(features) AS feature
-    FROM read_json_auto('${BOUNDARY}')
-  );
+  SELECT geom FROM ST_Read('${BOUNDARY}');
 
 COPY (
   WITH r AS (
@@ -32,8 +28,7 @@ COPY (
       id,
       geometry
     FROM read_parquet(
-      's3://overturemaps-us-west-2/release/' || getvariable('latest') ||
-        '/theme=transportation/type=segment/*',
+      '${SOURCE}',
       hive_partitioning = 1
     )
     WHERE bbox.xmin BETWEEN ${WEST} AND ${EAST}
@@ -43,4 +38,4 @@ COPY (
   FROM r, town_boundary t
   WHERE ST_Intersects(t.geom, r.geometry)
 ) TO '${OUT}'
-WITH (FORMAT GDAL, DRIVER 'GeoJSON', SRS 'EPSG:4326');
+WITH (FORMAT GDAL, DRIVER 'GeoJSON');

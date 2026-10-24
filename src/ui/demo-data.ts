@@ -23,6 +23,8 @@ export interface GeoCandidate extends CandidateSite {
   bgMinorityPct?: number | null;
   bgLimitedEnglishPct?: number | null;
   bgIncome?: number | null;
+  /** Tract-level energy burden % from DOE LEAD. */
+  energyBurdenPct?: number | null;
 }
 
 /** Sample center — a placeholder point (replace with the chosen demo area). */

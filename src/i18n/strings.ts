@@ -5,7 +5,7 @@
  * user can read comes from here, keyed by a short name.
  */
 
-export type Lang = "en" | "es" | "pt" | "fr" | "ht";
+export type Lang = "en" | "es" | "pt" | "fr" | "ht" | "zh" | "vi" | "ar" | "cv" | "km";
 
 /**
  * Selectable languages, each labelled in its OWN language (native name). These
@@ -24,6 +24,11 @@ export const LANGUAGES: { code: Lang; native: string }[] = [
   { code: "pt", native: "Português" },
   { code: "fr", native: "Français" },
   { code: "ht", native: "Kreyòl Ayisyen" },
+  { code: "zh", native: "中文" },
+  { code: "vi", native: "Tiếng Việt" },
+  { code: "ar", native: "العربية" },
+  { code: "cv", native: "Kriolu" },
+  { code: "km", native: "ខ្មែរ" },
 ];
 
 export const STRINGS = {
@@ -34,6 +39,11 @@ export const STRINGS = {
     pt: "Onde plantar árvores para refrescar casas e poupar energia.",
     fr: "Où planter des arbres pour rafraîchir les maisons et économiser l'énergie.",
     ht: "Kote pou plante pyebwa pou fè kay fre epi ekonomize enèji.",
+    zh: "在哪里种树来为房屋降温并节约能源。",
+    vi: "Nơi trồng cây để làm mát nhà và tiết kiệm năng lượng.",
+    ar: "أين تزرع الأشجار لتبريد المنازل وتوفير الطاقة.",
+    cv: "Undi ki pode planta arvi pa sfria kasa i poupa enerjia.",
+    km: "កន្លែងដាំដើមឈើ ដើម្បីបន្ថយកំដៅផ្ទះ និងសន្សំថាមពល។",
   },
   dataReal: {
     en: "Real Chelsea buildings (Overture Maps)",
@@ -43,23 +53,28 @@ export const STRINGS = {
     en: "Demo data (sample grid)",
     es: "Datos de demostración (cuadrícula de muestra)",
   },
-  budgetLabel: { en: "Tree budget", es: "Presupuesto de árboles", pt: "Orçamento de árvores", fr: "Budget d'arbres", ht: "Bidjè pyebwa" },
-  budgetUnit: { en: "trees", es: "árboles", pt: "árvores", fr: "arbres", ht: "pyebwa" },
+  budgetLabel: { en: "Tree budget", es: "Presupuesto de árboles", pt: "Orçamento de árvores", fr: "Budget d'arbres", ht: "Bidjè pyebwa", zh: "树木预算", vi: "Ngân sách cây", ar: "ميزانية الأشجار", cv: "Orsamentu di arvi", km: "ថវិកាដើមឈើ" },
+  budgetUnit: { en: "trees", es: "árboles", pt: "árvores", fr: "arbres", ht: "pyebwa", zh: "棵", vi: "cây", ar: "أشجار", cv: "arvi", km: "ដើម" },
   sliderLabel: {
     en: "Energy vs. equity",
     es: "Energía frente a equidad",
     pt: "Energia vs. equidade",
     fr: "Énergie vs. équité",
     ht: "Enèji vs. ekite",
+    zh: "能源与公平",
+    vi: "Năng lượng và công bằng",
+    ar: "الطاقة مقابل الإنصاف",
+    cv: "Enerjia vs. ekidadi",
+    km: "ថាមពល ទល់នឹង សមធម៌",
   },
-  sliderEnergy: { en: "Energy", es: "Energía", pt: "Energia", fr: "Énergie", ht: "Enèji" },
-  sliderEquity: { en: "Equity", es: "Equidad", pt: "Equidade", fr: "Équité", ht: "Ekite" },
-  optimize: { en: "Optimize", es: "Optimizar", pt: "Otimizar", fr: "Optimiser", ht: "Optimize" },
-  optimizing: { en: "Optimizing…", es: "Optimizando…", pt: "Otimizando…", fr: "Optimisation…", ht: "Ap optimize…" },
-  growthLabel: { en: "Tree growth", es: "Crecimiento del árbol", pt: "Crescimento da árvore", fr: "Croissance de l'arbre", ht: "Kwasans pyebwa" },
-  growthYear: { en: "Year", es: "Año", pt: "Ano", fr: "Année", ht: "Ane" },
-  growthPlanted: { en: "just planted", es: "recién plantado", pt: "recém-plantado", fr: "fraîchement planté", ht: "fèk plante" },
-  growthMature: { en: "mature", es: "maduro", pt: "maduro", fr: "mature", ht: "gran" },
+  sliderEnergy: { en: "Energy", es: "Energía", pt: "Energia", fr: "Énergie", ht: "Enèji", zh: "能源", vi: "Năng lượng", ar: "الطاقة", cv: "Enerjia", km: "ថាមពល" },
+  sliderEquity: { en: "Equity", es: "Equidad", pt: "Equidade", fr: "Équité", ht: "Ekite", zh: "公平", vi: "Công bằng", ar: "الإنصاف", cv: "Ekidadi", km: "សមធម៌" },
+  optimize: { en: "Optimize", es: "Optimizar", pt: "Otimizar", fr: "Optimiser", ht: "Optimize", zh: "优化", vi: "Tối ưu hóa", ar: "تحسين", cv: "Otimiza", km: "បង្កើនប្រសិទ្ធភាព" },
+  optimizing: { en: "Optimizing…", es: "Optimizando…", pt: "Otimizando…", fr: "Optimisation…", ht: "Ap optimize…", zh: "优化中…", vi: "Đang tối ưu…", ar: "جارٍ التحسين…", cv: "Ta otimiza…", km: "កំពុងបង្កើន…" },
+  growthLabel: { en: "Tree growth", es: "Crecimiento del árbol", pt: "Crescimento da árvore", fr: "Croissance de l'arbre", ht: "Kwasans pyebwa", zh: "树木生长", vi: "Sự phát triển của cây", ar: "نمو الشجرة", cv: "Krisimentu di arvi", km: "ការលូតលាស់ដើមឈើ" },
+  growthYear: { en: "Year", es: "Año", pt: "Ano", fr: "Année", ht: "Ane", zh: "年", vi: "Năm", ar: "سنة", cv: "Anu", km: "ឆ្នាំ" },
+  growthPlanted: { en: "just planted", es: "recién plantado", pt: "recém-plantado", fr: "fraîchement planté", ht: "fèk plante", zh: "刚种植", vi: "mới trồng", ar: "مزروع حديثًا", cv: "fla plantadu", km: "ទើបដាំ" },
+  growthMature: { en: "mature", es: "maduro", pt: "maduro", fr: "mature", ht: "gran", zh: "成熟", vi: "trưởng thành", ar: "ناضج", cv: "maduru", km: "ពេញវ័យ" },
   showNaive: { en: "Show naive plan", es: "Mostrar plan ingenuo" },
   showOptimized: { en: "Show optimized plan", es: "Mostrar plan optimizado" },
   planOptimized: { en: "Optimized plan", es: "Plan optimizado" },
@@ -107,6 +122,48 @@ export const STRINGS = {
   whyEquity: { en: "Neighborhood need", es: "Necesidad del barrio" },
   whyUtility: { en: "Electric utility", es: "Compañía eléctrica" },
   whyEjCriteria: { en: "EJ criteria", es: "Criterios JA" },
+  whyEnergyBurden: { en: "Energy burden (LEAD)", es: "Carga energética (LEAD)" },
+  overviewToggle: { en: "All of Inner Core", es: "Todo el Inner Core" },
+  overviewBack: { en: "Back to town", es: "Volver al pueblo" },
+  overviewLegendTitle: { en: "EJ block groups", es: "Grupos de JA" },
+  overviewLegendNote: {
+    en: "Count of EJ-flagged 2020 block groups (MassGIS). Darker = more.",
+    es: "Número de grupos marcados de JA 2020 (MassGIS). Más oscuro = más.",
+  },
+  overviewListTitle: { en: "Inner Core towns", es: "Pueblos del Inner Core" },
+  overviewTitle: { en: "All of Inner Core", es: "Todo el Inner Core" },
+  overviewClose: { en: "Close overview", es: "Cerrar vista general" },
+  overviewOpen: { en: "Open this town", es: "Abrir este pueblo" },
+  overviewNotBuilt: { en: "Coming Soon!", es: "¡Próximamente!" },
+  tableEmpty: {
+    en: "Generate a tree placement first — press Optimize.",
+    es: "Primero genera una ubicación de árboles — pulsa Optimizar.",
+  },
+  residentExit: { en: "Close", es: "Cerrar" },
+  residentTapPrompt: {
+    en: "Tap your home on the map to see which side is best for a tree.",
+    es: "Toca tu casa en el mapa para ver qué lado es mejor para un árbol.",
+  },
+  residentTapAgain: { en: "Tap again to pick a different home.", es: "Toca de nuevo para elegir otra casa." },
+  residentUseLocation: { en: "Use my location", es: "Usar mi ubicación" },
+  residentResultTitle: { en: "Best side of your home for a tree", es: "Mejor lado de tu casa para un árbol" },
+  residentNone: {
+    en: "No helpful side found right at this home. Try tapping a nearby building.",
+    es: "No se encontró un buen lado en esta casa. Prueba tocar un edificio cercano.",
+  },
+  residentEstimate: {
+    en: "Estimated from sun angle and your home's walls. We never pick a side that would raise your heating.",
+    es: "Estimado según el sol y las paredes de tu casa. Nunca elegimos un lado que suba tu calefacción.",
+  },
+  residentPropertyCaveat: {
+    en: "This shows the best DIRECTION for a tree near your home, not an exact spot. Make sure any planting is on your property, and ask your city's tree program before planting.",
+    es: "Esto muestra la mejor DIRECCIÓN para un árbol cerca de tu casa, no un punto exacto. Asegúrate de que la plantación sea en tu propiedad y consulta el programa de árboles de tu ciudad antes de plantar.",
+  },
+  residentSideLabel: {
+    en: "side of your home",
+    es: "lado de tu casa",
+  },
+  residentToggle: { en: "Toggle Resident View", es: "Ver vista de residente" },
   reason_westBest: {
     en: "West/southwest side: the best spot. Shade here blocks hot summer afternoon sun.",
     es: "Lado oeste/suroeste: el mejor lugar. La sombra bloquea el sol caliente de la tarde en verano.",
@@ -233,6 +290,11 @@ export const STRINGS = {
     ht: "Chwazi yon vil",
   },
   townLoading: { en: "Loading…", es: "Cargando…" },
+  townNoMatch: { en: "No matching city", es: "Ninguna ciudad coincide" },
+  plannerComingSoon: {
+    en: "Buildings and equity are ready for this town. The tree planner and shade are being computed — coming soon.",
+    es: "Los edificios y la equidad están listos para este pueblo. El planificador de árboles y la sombra se están calculando — próximamente.",
+  },
   subheading: {
     en: "Serving Greater Boston",
     es: "Para el Gran Boston",

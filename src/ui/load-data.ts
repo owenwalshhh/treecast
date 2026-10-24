@@ -69,6 +69,8 @@ export interface TownInfo {
   base: string;
   buildings?: number;
   candidates?: number;
+  /** True when the town has candidate-sites + shade (the full planner/shade). */
+  hasPlanner?: boolean;
   bytes?: number;
 }
 
@@ -86,8 +88,18 @@ export async function loadTowns(): Promise<TownInfo[]> {
     base: String(t.base ?? `/data/${t.slug}`),
     buildings: t.buildings,
     candidates: t.candidates,
+    hasPlanner: t.hasPlanner !== false && (t.hasPlanner === true || (t.candidates ?? 0) > 0),
     bytes: t.bytes,
   }));
+}
+
+/**
+ * Load the "All of Inner Core" town outlines (region/town-outlines.geojson),
+ * each feature carrying town, slug, ejBlockGroups, avgMinorityPct and a `built`
+ * flag. Returns null when the region file is absent.
+ */
+export async function loadRegionOutlines(): Promise<any | null> {
+  return fetchJson("/data/region/town-outlines.geojson");
 }
 
 type Ring = [number, number][];
@@ -171,7 +183,7 @@ export async function loadAppData(base = "/data"): Promise<AppData> {
         return { ...site, lng, lat, needTier: p.needTier,
           geoid: p.geoid, tract: p.tract, ejCriteria: p.ejCriteria,
           bgMinorityPct: p.bgMinorityPct, bgLimitedEnglishPct: p.bgLimitedEnglishPct,
-          bgIncome: p.bgIncome };
+          bgIncome: p.bgIncome, energyBurdenPct: p.energyBurdenPct };
       })
       .filter((c: GeoCandidate | null): c is GeoCandidate => c !== null);
 

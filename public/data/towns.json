@@ -1,7 +1,7 @@
 {
   "source": "https://www.mapc.org/get-involved/subregions/icc/",
-  "subregion": "MAPC Inner Core (ICC)",
-  "note": "Only towns the pipeline has built appear here. base points at the data folder for each town; Chelsea currently uses the legacy flat /data path.",
+  "subregion": "MAPC Inner Core Committee (ICC)",
+  "note": "Only towns the pipeline has built appear here. base points at each town's data folder; Chelsea may use the legacy flat /data path.",
   "towns": [
     {
       "name": "Chelsea",
@@ -9,7 +9,15 @@
       "base": "/data",
       "buildings": 17834,
       "candidates": 2813,
-      "bytes": 8681469
+      "bytes": 9195596
+    },
+    {
+      "name": "Everett",
+      "slug": "everett",
+      "base": "/data/everett",
+      "buildings": 9966,
+      "candidates": 3817,
+      "bytes": 6423620
     }
   ]
 }

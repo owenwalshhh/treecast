@@ -1,0 +1,16 @@
+{
+  "name": "Winthrop",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.0143601,
+    "south": 42.3503113,
+    "east": -70.8163261,
+    "north": 42.4117028
+  },
+  "center": {
+    "lng": -70.9153431,
+    "lat": 42.38100705
+  },
+  "town_name_ej": "Winthrop",
+  "town_name_utility": "WINTHROP"
+}

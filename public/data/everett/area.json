@@ -1,0 +1,16 @@
+{
+  "name": "Everett",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.0804983,
+    "south": 42.382519900000005,
+    "east": -71.024227,
+    "north": 42.4282015
+  },
+  "center": {
+    "lng": -71.05236264999999,
+    "lat": 42.4053607
+  },
+  "town_name_ej": "Everett",
+  "town_name_utility": "EVERETT"
+}

@@ -46,7 +46,7 @@ requirements it satisfies. `[ ]` = open, `[x]` = done.
 - [x] **C2. `load-data` by slug.** Parameterize loading by town slug; region
   data loads once. (supports R3.2, R4.*)
 
-- [ ] **C3. Regional overview.** `RegionOverview.tsx`: town outlines shaded by
+- [x] **C3. Regional overview.** `RegionOverview.tsx`: town outlines shaded by
   EJ-resident share, labeled legend, click-to-open, accessible parallel list.
   (R3.3, R3.4, R3.5)
 
@@ -56,7 +56,7 @@ requirements it satisfies. `[ ]` = open, `[x]` = done.
   groups for all Inner Core towns (geometry + GEOID + EJ criteria + limited-
   English %), simplified < 5 MB, to `public/data/region/`. (R4.1)
 
-- [ ] **D2. LEAD by tract + utility by town.** `lead-by-tract.json` keyed by the
+- [x] **D2. LEAD by tract + utility by town.** `lead-by-tract.json` keyed by the
   11-digit tract; `utility-by-town.json` from the Hackachusetts kit. (R4.2, R4.3)
 
 - [x] **D3. Per-candidate block-group join.** In the candidate stage, attach

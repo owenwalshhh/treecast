@@ -67,14 +67,20 @@ for (const { name, slug } of order) {
     dir = join(DATA, slug);
     base = `/data/${slug}`;
   }
-  if (!existsSync(join(dir, "candidate-sites.geojson"))) continue; // not built yet
+  // A town appears once it has its fast data (buildings). Candidates + shade
+  // (the slow per-town compute) are OPTIONAL — a town without them still shows
+  // its buildings, 3D and equity; it just can't run the planner or shade until
+  // those are computed. hasPlanner says which towns have the full data.
+  if (!existsSync(join(dir, "buildings.geojson"))) continue; // no fast data yet
+  const hasPlanner = existsSync(join(dir, "candidate-sites.geojson"));
 
   towns.push({
     name,
     slug,
     base,
     buildings: featureCount(join(dir, "buildings.geojson")),
-    candidates: featureCount(join(dir, "candidate-sites.geojson")),
+    candidates: hasPlanner ? featureCount(join(dir, "candidate-sites.geojson")) : 0,
+    hasPlanner,
     bytes: slug === "chelsea" && chelseaLegacy ? folderBytes(dir) : folderBytes(dir),
   });
 }
@@ -83,7 +89,7 @@ const index = {
   source: buildList.source,
   subregion: buildList.subregion,
   note:
-    "Only towns the pipeline has built appear here. base points at each town's data folder; Chelsea may use the legacy flat /data path.",
+    "A town appears once it has buildings (its fast data). hasPlanner=true means it also has candidate-sites + shade (the full optimizer/shade). base points at each town's data folder; Chelsea may use the legacy flat /data path.",
   towns,
 };
 

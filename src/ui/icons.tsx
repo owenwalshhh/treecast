@@ -59,12 +59,39 @@ export function RegionIcon({ size = 22 }: IconProps) {
   );
 }
 
-/** Globe — language picker. */
+/** Translate — language picker (Lucide "languages": an A→文 glyph pair). */
 export function GlobeIcon({ size = 22 }: IconProps) {
   return (
     <svg {...base(size)} aria-hidden="true">
+      <path d="m5 8 6 6" />
+      <path d="m4 14 6-6 2-3" />
+      <path d="M2 5h12" />
+      <path d="M7 2h1" />
+      <path d="m22 22-5-10-5 10" />
+      <path d="M14 18h6" />
+    </svg>
+  );
+}
+
+/** Region globe — the "All of Inner Core" overview toggle. */
+export function RegionGlobeIcon({ size = 22 }: IconProps) {
+  return (
+    <svg {...base(size)} aria-hidden="true">
       <circle cx="12" cy="12" r="9" />
-      <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" />
+      <ellipse cx="12" cy="12" rx="4" ry="9" />
+      <path d="M3 12h18M4.5 7h15M4.5 17h15" />
+    </svg>
+  );
+}
+
+/** Satellite — toggle a satellite/aerial basemap (Lucide "satellite-dish"). */
+export function SatelliteIcon({ size = 22 }: IconProps) {
+  return (
+    <svg {...base(size)} aria-hidden="true">
+      <path d="M18 12a6 6 0 0 0-6-6" />
+      <path d="M2.824 10.459a8 8 0 0 0 10.717 10.717c.558-.276.623-1.012.183-1.452l-9.448-9.448c-.44-.44-1.176-.375-1.452.183" />
+      <path d="M22 12A10 10 0 0 0 12 2" />
+      <path d="m9 15 4-4" />
     </svg>
   );
 }

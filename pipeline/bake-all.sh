@@ -27,7 +27,11 @@ FORCE=0
 
 slugify() { echo "$1" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9]\+/-/g' -e 's/^-//' -e 's/-$//'; }
 
-mapfile -t TOWNS < <(jq -r '.towns[].name' "$PIPE/towns.json")
+# Read town names portably (macOS ships bash 3.2 — no mapfile).
+TOWNS=()
+while IFS= read -r name; do
+  [ -n "$name" ] && TOWNS+=("$name")
+done < <(jq -r '.towns[].name' "$PIPE/towns.json")
 
 echo "== Treecast bake queue: ${#TOWNS[@]} towns ==" | tee -a "$LOG"
 echo "started $(date)" | tee -a "$LOG"

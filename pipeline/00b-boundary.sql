@@ -17,7 +17,7 @@ INSTALL spatial;  LOAD spatial;
 SET s3_region = 'us-west-2';
 CREATE SECRET IF NOT EXISTS anon (TYPE s3, PROVIDER config, KEY_ID '', SECRET '', REGION 'us-west-2');
 
-SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');
+${LATEST_SETUP}
 
 COPY (
   SELECT
@@ -25,8 +25,7 @@ COPY (
     -- ~10 m tolerance: trims vertices without moving the edge meaningfully.
     ST_SimplifyPreserveTopology(geometry, 0.0001) AS geometry
   FROM read_parquet(
-    's3://overturemaps-us-west-2/release/' || getvariable('latest') ||
-      '/theme=divisions/type=division_area/*',
+    '${SOURCE}',
     hive_partitioning = 1
   )
   WHERE names.primary = '${CITY}'
@@ -36,4 +35,4 @@ COPY (
   ORDER BY ST_Area(geometry) DESC
   LIMIT 1
 ) TO '${OUT}'
-WITH (FORMAT GDAL, DRIVER 'GeoJSON', SRS 'EPSG:4326');
+WITH (FORMAT GDAL, DRIVER 'GeoJSON');

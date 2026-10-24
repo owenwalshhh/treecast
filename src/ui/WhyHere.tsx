@@ -52,6 +52,7 @@ export function WhyHere({ tree, lang, onClose, name, equity }: Props) {
   const site = tree.site as GeoCandidate;
   const ejCriteria = site.ejCriteria ?? (equity?.criteria?.join(", ") || null);
   const bgMinority = site.bgMinorityPct;
+  const energyBurden = site.energyBurdenPct;
 
   return (
     <div
@@ -119,6 +120,12 @@ export function WhyHere({ tree, lang, onClose, name, equity }: Props) {
                 <> · {Math.round(bgMinority)}% minority</>
               )}
             </dd>
+          </>
+        )}
+        {typeof energyBurden === "number" && (
+          <>
+            <dt style={{ opacity: 0.7 }}>{t("whyEnergyBurden", lang)}</dt>
+            <dd style={{ margin: 0 }}>{energyBurden}%</dd>
           </>
         )}
         {equity?.electric_utility && (
