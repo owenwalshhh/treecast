@@ -43,4 +43,4 @@ COPY (
   FROM r, town_boundary t
   WHERE ST_Intersects(t.geom, r.geometry)
 ) TO '${OUT}'
-WITH (FORMAT GDAL, DRIVER 'GeoJSON', SRS 'EPSG:4326');
+WITH (FORMAT GDAL, DRIVER 'GeoJSON');

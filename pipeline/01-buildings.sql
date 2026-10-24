@@ -52,4 +52,4 @@ COPY (
   FROM b, town_boundary t
   WHERE ST_Contains(t.geom, ST_Centroid(b.geometry))
 ) TO '${OUT}'
-WITH (FORMAT GDAL, DRIVER 'GeoJSON', SRS 'EPSG:4326');
+WITH (FORMAT GDAL, DRIVER 'GeoJSON');
