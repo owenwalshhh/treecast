@@ -304,7 +304,6 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 /* Rail + table + zoom hover labels (custom tooltip in the UI style). */
 .rail button[data-label],
 .table-btn[data-label],
-.view-toggle[data-label],
 .zoom-pill button[data-label] { position: relative; }
 .rail button[data-label]::after,
 .table-btn[data-label]::after,
@@ -550,7 +549,7 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 /* 2D / 3D view toggle — bottom-right stack, above the table button, matching
    the circular rail/zoom buttons. */
 .view-toggle {
-  position: absolute;
+  position: fixed;
   right: 16px;
   bottom: 148px;
   z-index: 6;

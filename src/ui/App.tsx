@@ -292,6 +292,18 @@ export function App() {
         >
           <GlobeIcon />
         </button>
+        {activePlan && (
+          <button
+            type="button"
+            className={showTable ? "active" : ""}
+            data-label={t("tableView", lang)}
+            title={t("tableView", lang)}
+            aria-pressed={showTable}
+            onClick={() => setShowTable((v) => !v)}
+          >
+            <TableIcon />
+          </button>
+        )}
         <button
           type="button"
           className={showSources ? "active" : ""}
@@ -349,20 +361,6 @@ export function App() {
         />
       )}
 
-      {/* Table toggle — circular, same size as the rail buttons, sitting above
-          the zoom pill (bottom-right). */}
-      {activePlan && (
-        <button
-          type="button"
-          className={`table-btn glass ${showTable ? "active" : ""}`}
-          data-label={t("tableView", lang)}
-          aria-label={t("tableView", lang)}
-          onClick={() => setShowTable((v) => !v)}
-        >
-          <TableIcon />
-        </button>
-      )}
-
       {/* Zoom + recenter pill, bottom-right: fit-to-city, zoom in, zoom out. */}
       <div className="zoom-pill glass">
         <button
@@ -391,16 +389,16 @@ export function App() {
         </button>
       </div>
 
-      {/* Table overlay — clears the right-side controls (table button + pill). */}
+      {/* Table overlay — bottom strip, stops left of the right-side controls. */}
       {showTable && activePlan && (
         <div
           className="glass"
           style={{
-            position: "absolute",
+            position: "fixed",
             left: 16,
-            right: 76,
-            bottom: 48,
-            maxHeight: "min(360px, calc(100vh - 120px))",
+            right: 78,
+            bottom: 16,
+            maxHeight: "min(320px, 42vh)",
             overflow: "auto",
             padding: 14,
             zIndex: 6,
