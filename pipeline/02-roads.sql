@@ -20,11 +20,7 @@ CREATE SECRET IF NOT EXISTS anon (TYPE s3, PROVIDER config, KEY_ID '', SECRET ''
 SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');
 
 CREATE OR REPLACE TABLE town_boundary AS
-  SELECT ST_GeomFromGeoJSON(feature->'geometry') AS geom
-  FROM (
-    SELECT unnest(features) AS feature
-    FROM read_json_auto('${BOUNDARY}')
-  );
+  SELECT geom FROM ST_Read('${BOUNDARY}');
 
 COPY (
   WITH r AS (
