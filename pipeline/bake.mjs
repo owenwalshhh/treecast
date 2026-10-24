@@ -85,12 +85,14 @@ let force = false;
 let townOnly = false; // when set, skip region prep + finalize (parallel wrapper owns those)
 let verbose = false; // when set, print a heartbeat + DuckDB progress bar for long steps
 let smallFirst = false; // when set, bake towns smallest-area-first (quick wins before slow Boston)
+let fastOnly = false; // when set, stop after equity (skip candidates+shade) — fast data for all towns
 const requested = [];
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--force") force = true;
   else if (args[i] === "--town-only") townOnly = true;
   else if (args[i] === "--verbose" || args[i] === "-v") verbose = true;
   else if (args[i] === "--small-first") smallFirst = true;
+  else if (args[i] === "--fast-only") fastOnly = true;
   else if (args[i] === "--prefetch-only") { /* handled below */ }
   else if (args[i] === "--town") requested.push(args[++i]);
   else if (args[i].startsWith("--town=")) requested.push(args[i].slice(7));
@@ -271,6 +273,12 @@ function buildOne(city) {
   });
 
   // 5) candidates + shade (read the town folder via env var).
+  // --fast-only stops here: the town gets its fast data (buildings/roads/equity)
+  // and the slow planner compute is deferred. The app shows it via hasPlanner.
+  if (fastOnly) {
+    console.log(`  ok ${city} (fast-only): ${featureCount(join(out, "buildings.geojson"))} buildings, equity ready, planner deferred`);
+    return true;
+  }
   const env = { ...process.env, TREECAST_TOWN_DIR: out };
   console.log("  [5/6] candidates…");
   execFileSync("node", [join(PIPE, "04-candidates.mjs")], { env, stdio: "inherit" });
@@ -310,8 +318,13 @@ if (!townOnly) prefetchOverture();
 for (const city of towns) {
   const slug = slugify(city);
   const chelseaLegacy = slug === "chelsea" && existsSync(join(DATA, "candidate-sites.geojson")) && !existsSync(join(DATA, "chelsea"));
-  const already = chelseaLegacy || existsSync(join(DATA, slug, "candidate-sites.geojson"));
-  if (!force && already) { console.log(`-- skip ${city} (already built)`); skipped++; continue; }
+  const dir = chelseaLegacy ? DATA : join(DATA, slug);
+  // In fast-only mode "done" = has equity (the last fast step). In full mode
+  // "done" = has candidates (so a fast-only town is upgraded, not skipped).
+  const already = fastOnly
+    ? existsSync(join(dir, "equity-summary.json"))
+    : (chelseaLegacy || existsSync(join(DATA, slug, "candidate-sites.geojson")));
+  if (!force && already) { console.log(`-- skip ${city} (already ${fastOnly ? "has fast data" : "built"})`); skipped++; continue; }
   let ok = false;
   try { ok = buildOne(city); ok ? built++ : failed++; } catch (e) { console.error(`  !! ${city}: ${e.message}`); failed++; }
   // Rebuild the index after EACH town so a finished town appears in the app's
