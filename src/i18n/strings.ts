@@ -121,6 +121,23 @@ export const STRINGS = {
     en: "Generate a tree placement first — press Optimize.",
     es: "Primero genera una ubicación de árboles — pulsa Optimizar.",
   },
+  residentExit: { en: "Close", es: "Cerrar" },
+  residentTapPrompt: {
+    en: "Tap your home on the map to see where a tree would help it most.",
+    es: "Toca tu casa en el mapa para ver dónde un árbol ayudaría más.",
+  },
+  residentTapAgain: { en: "Tap again to pick a different spot.", es: "Toca de nuevo para elegir otro lugar." },
+  residentUseLocation: { en: "Use my location", es: "Usar mi ubicación" },
+  residentResultTitle: { en: "Best spots for a tree near you", es: "Mejores lugares para un árbol cerca de ti" },
+  residentNone: {
+    en: "No helpful spot found right next to this home. Try tapping a nearby building.",
+    es: "No se encontró un buen lugar junto a esta casa. Prueba tocar un edificio cercano.",
+  },
+  residentEstimate: {
+    en: "Estimated from sun angle and your home's walls. We never pick a spot that would raise your heating.",
+    es: "Estimado según el sol y las paredes de tu casa. Nunca elegimos un lugar que suba tu calefacción.",
+  },
+  residentToggle: { en: "Resident view", es: "Vista de residente" },
   reason_westBest: {
     en: "West/southwest side: the best spot. Shade here blocks hot summer afternoon sun.",
     es: "Lado oeste/suroeste: el mejor lugar. La sombra bloquea el sol caliente de la tarde en verano.",

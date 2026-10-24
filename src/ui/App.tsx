@@ -16,6 +16,7 @@ import { Section } from "./Section";
 import { TownPicker } from "./TownPicker";
 import { PlannerMap } from "./PlannerMap";
 import { RegionOverview } from "./RegionOverview";
+import { ResidentView } from "./ResidentView";
 import { PlanTable } from "./PlanTable";
 import { WhyHere } from "./WhyHere";
 import { SourcesPanel } from "./SourcesPanel";
@@ -38,6 +39,7 @@ export function App() {
   const [drawing, setDrawing] = useState(false);
   const [area, setArea] = useState<[number, number][] | null>(null);
   const [overview, setOverview] = useState(false);
+  const [resident, setResident] = useState(false);
 
   // Load the list of built towns once, then load the first town's data.
   useEffect(() => {
@@ -133,6 +135,14 @@ export function App() {
 
   return (
     <div className="app-shell">
+      {resident && data && (
+        <ResidentView
+          candidates={data.candidates}
+          center={data.center}
+          lang={lang}
+          onExit={() => setResident(false)}
+        />
+      )}
       {/* Full-bleed map underneath everything. */}
       <div className="map-full">
         {overview ? (
@@ -182,6 +192,13 @@ export function App() {
           onClick={() => setOverview((v) => !v)}
         >
           {overview ? `← ${t("overviewBack", lang)}` : `🗺 ${t("overviewToggle", lang)}`}
+        </button>
+        <button
+          type="button"
+          className="overview-toggle"
+          onClick={() => setResident(true)}
+        >
+          📱 {t("residentToggle", lang)}
         </button>
 
         <div style={{ marginTop: 6 }}>
