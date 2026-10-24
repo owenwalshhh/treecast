@@ -158,6 +158,13 @@ export function PlannerMap({
       style: POSITRON_PRIMARY,
       center: [center.lng, center.lat],
       zoom: 14,
+      // Keep the map in metro Boston: can't zoom out past the region, and can't
+      // pan outside a padded box around the MAPC Inner Core. [W,S],[E,N].
+      minZoom: 9.5,
+      maxBounds: [
+        [-71.45, 42.10],
+        [-70.75, 42.60],
+      ],
       attributionControl: false,
     });
     mapRef.current = map;

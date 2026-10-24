@@ -134,7 +134,7 @@ export const STRINGS = {
   overviewTitle: { en: "All of Inner Core", es: "Todo el Inner Core" },
   overviewClose: { en: "Close overview", es: "Cerrar vista general" },
   overviewOpen: { en: "Open this town", es: "Abrir este pueblo" },
-  overviewNotBuilt: { en: "not built yet", es: "sin construir" },
+  overviewNotBuilt: { en: "Coming Soon!", es: "¡Próximamente!" },
   tableEmpty: {
     en: "Generate a tree placement first — press Optimize.",
     es: "Primero genera una ubicación de árboles — pulsa Optimizar.",

@@ -107,7 +107,7 @@ export function App() {
     }, 300);
   }
 
-  const [showShade, setShowShade] = useState(false);
+  const [showShade, setShowShade] = useState(true);
   const [showSources, setShowSources] = useState(false);
   const [showTable, setShowTable] = useState(false);
   const [showLang, setShowLang] = useState(false);
