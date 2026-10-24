@@ -17,6 +17,7 @@ import type { Plan } from "../optimizer/types";
 import { crownDiameterFt } from "../optimizer/growth";
 import { GROWTH } from "../optimizer/coefficients";
 import { resolveHeight } from "../optimizer/building-height";
+import { SatelliteIcon } from "./icons";
 
 // A free raster basemap (OpenStreetMap tiles). No key needed for a demo.
 // Vector Positron basemap. Primary is OpenFreeMap; CARTO Positron is the
@@ -135,6 +136,11 @@ export function PlannerMap({
   const [view3d, setView3d] = useState(false);
   const view3dRef = useRef(view3d);
   view3dRef.current = view3d;
+
+  // Satellite/aerial overlay toggle. Adds a raster imagery layer on top of the
+  // vector basemap (so labels/streets still show through faintly); the rest of
+  // the map — trees, shade, draw — is untouched.
+  const [satellite, setSatellite] = useState(false);
 
   // Overlays driven by the draw effect: a live sqft label at the selection
   // centroid, and a tip that follows the cursor while drawing.
@@ -331,6 +337,45 @@ export function PlannerMap({
       map.off("zoomend", apply);
     };
   }, [view3d]);
+
+  // Satellite overlay: Esri World Imagery raster tiles (free, no key). Added
+  // just above the vector basemap and below our candidate/shade/draw layers, so
+  // trees and the shade overlay still sit on top. Toggled by visibility — the
+  // rest of the map is untouched, so nothing else is rewired.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const ensure = () => {
+      if (!map.getSource("satellite")) {
+        map.addSource("satellite", {
+          type: "raster",
+          tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+          tileSize: 256,
+          attribution: "Imagery © Esri",
+        });
+        // Insert below the first of our own overlays if present, else on top.
+        const beforeId = map.getLayer("shade-raster")
+          ? "shade-raster"
+          : map.getLayer("candidates")
+            ? "candidates"
+            : undefined;
+        map.addLayer(
+          {
+            id: "satellite",
+            type: "raster",
+            source: "satellite",
+            layout: { visibility: satellite ? "visible" : "none" },
+            paint: { "raster-opacity": 1 },
+          },
+          beforeId,
+        );
+      } else {
+        map.setLayoutProperty("satellite", "visibility", satellite ? "visible" : "none");
+      }
+    };
+    if (map.isStyleLoaded()) ensure();
+    else map.once("load", ensure);
+  }, [satellite]);
 
   // Shade overlay: a fixed-resolution colored RASTER (red=no shade, green=full
   // shade), pinned to the data bounds and scaled like an image — so every pixel
@@ -677,6 +722,17 @@ export function PlannerMap({
         </div>
       )}
       {/* 2D / 3D toggle — top-right corner, keyboard-accessible. */}
+      <button
+        type="button"
+        className="glass view-toggle sat-toggle"
+        data-label={satellite ? "Hide satellite" : "Satellite view"}
+        aria-pressed={satellite}
+        aria-label={satellite ? "Hide satellite" : "Satellite view"}
+        title={satellite ? "Satellite on" : "Satellite view"}
+        onClick={() => setSatellite((v) => !v)}
+      >
+        <SatelliteIcon size={20} />
+      </button>
       <button
         type="button"
         className="glass view-toggle"

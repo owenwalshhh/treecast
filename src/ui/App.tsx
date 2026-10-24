@@ -20,7 +20,7 @@ import { ResidentView } from "./ResidentView";
 import { PlanTable } from "./PlanTable";
 import { WhyHere } from "./WhyHere";
 import { SourcesPanel } from "./SourcesPanel";
-import { SunIcon, InfoIcon, GlobeIcon, WarnIcon, TableIcon, PlusIcon, MinusIcon, FitIcon } from "./icons";
+import { SunIcon, InfoIcon, GlobeIcon, WarnIcon, TableIcon, PlusIcon, MinusIcon, FitIcon, RegionGlobeIcon } from "./icons";
 import { t, LANGUAGES, type Lang } from "../i18n/strings";
 import { treeName } from "./describe";
 
@@ -143,6 +143,12 @@ export function App() {
           onExit={() => setResident(false)}
         />
       )}
+      {/* Top banner: a slim line to open the resident (phone) view. */}
+      {!resident && !overview && (
+        <button type="button" className="resident-banner" onClick={() => setResident(true)}>
+          {t("residentToggle", lang)}
+        </button>
+      )}
       {/* Full-bleed map underneath everything. */}
       <div className="map-full">
         {overview ? (
@@ -185,21 +191,6 @@ export function App() {
           lang={lang}
           onPick={pickTown}
         />
-        <button
-          type="button"
-          className="overview-toggle"
-          aria-pressed={overview}
-          onClick={() => setOverview((v) => !v)}
-        >
-          {overview ? `← ${t("overviewBack", lang)}` : `🗺 ${t("overviewToggle", lang)}`}
-        </button>
-        <button
-          type="button"
-          className="overview-toggle"
-          onClick={() => setResident(true)}
-        >
-          📱 {t("residentToggle", lang)}
-        </button>
 
         <div style={{ marginTop: 6 }}>
           <Section title={t("sectionPlan", lang)} defaultOpen>
@@ -227,6 +218,7 @@ export function App() {
               <button
                 type="button"
                 className={!area && !drawing ? "primary" : ""}
+                style={{ flex: 1, minWidth: 0 }}
                 onClick={() => {
                   setArea(null);
                   setDrawing(false);
@@ -239,6 +231,7 @@ export function App() {
               <button
                 type="button"
                 className={drawing ? "primary" : ""}
+                style={{ flex: 1, minWidth: 0 }}
                 onClick={() => {
                   setArea(null);
                   setDrawing(true);
@@ -251,6 +244,7 @@ export function App() {
               {area && (
                 <button
                   type="button"
+                  style={{ flexBasis: "100%" }}
                   onClick={() => {
                     setArea(null);
                     setDrawing(false);
@@ -328,6 +322,16 @@ export function App() {
           onClick={() => setShowSources((v) => !v)}
         >
           <InfoIcon />
+        </button>
+        <button
+          type="button"
+          className={overview ? "active" : ""}
+          data-label={overview ? t("overviewBack", lang) : t("overviewToggle", lang)}
+          title={t("overviewToggle", lang)}
+          aria-pressed={overview}
+          onClick={() => setOverview((v) => !v)}
+        >
+          <RegionGlobeIcon />
         </button>
       </div>
 

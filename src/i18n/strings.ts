@@ -146,7 +146,7 @@ export const STRINGS = {
     en: "side of your home",
     es: "lado de tu casa",
   },
-  residentToggle: { en: "Resident view", es: "Vista de residente" },
+  residentToggle: { en: "Toggle Resident View", es: "Ver vista de residente" },
   reason_westBest: {
     en: "West/southwest side: the best spot. Shade here blocks hot summer afternoon sun.",
     es: "Lado oeste/suroeste: el mejor lugar. La sombra bloquea el sol caliente de la tarde en verano.",

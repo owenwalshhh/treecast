@@ -59,12 +59,40 @@ export function RegionIcon({ size = 22 }: IconProps) {
   );
 }
 
-/** Globe — language picker. */
+/** Translate — language picker (Google-Translate style: an "文/A" glyph pair). */
 export function GlobeIcon({ size = 22 }: IconProps) {
   return (
     <svg {...base(size)} aria-hidden="true">
+      {/* Left card: a Latin "A" (source language) */}
+      <path d="M3.3 11.5L5.8 5l2.5 6.5M4.1 9.6h3.4" />
+      {/* Right card: a CJK-ish glyph (target language) */}
+      <path d="M13 7h7M16.5 7v2c0 3-1.8 5-4 6M14.5 10.5c.6 2.2 2.3 3.8 4.5 4.6" />
+      {/* Divider arrow suggesting conversion */}
+      <path d="M11 14v6M9 18l2 2 2-2" />
+    </svg>
+  );
+}
+
+/** Region globe — the "All of Inner Core" overview toggle. */
+export function RegionGlobeIcon({ size = 22 }: IconProps) {
+  return (
+    <svg {...base(size)} aria-hidden="true">
       <circle cx="12" cy="12" r="9" />
-      <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" />
+      <ellipse cx="12" cy="12" rx="4" ry="9" />
+      <path d="M3 12h18M4.5 7h15M4.5 17h15" />
+    </svg>
+  );
+}
+
+/** Satellite — toggle a satellite/aerial basemap. */
+export function SatelliteIcon({ size = 22 }: IconProps) {
+  return (
+    <svg {...base(size)} aria-hidden="true">
+      <path d="M6.5 2.5l3 3M2.5 6.5l3 3" />
+      <rect x="3.2" y="5.2" width="4.5" height="4.5" rx="1" transform="rotate(45 5.45 7.45)" />
+      <path d="M9 9l6 6M13 11l2.5-2.5a2.1 2.1 0 0 1 3 3L16 14" />
+      <path d="M12.5 15.5a3 3 0 0 1-3 3M15 18a5.5 5.5 0 0 1-5.5 5.5" transform="translate(-1 -2)" />
+      <circle cx="17.5" cy="17.5" r="1" />
     </svg>
   );
 }

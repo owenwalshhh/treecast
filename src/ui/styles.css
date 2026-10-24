@@ -185,8 +185,9 @@ tbody tr:last-child { border-bottom: none; }
   box-shadow: none !important;
   color: #fff;
   font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.01em;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   padding: 10px 2px;
   cursor: pointer;
   transition: opacity 140ms ease;
@@ -572,6 +573,7 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   color: #fff;
 }
 .view-toggle:active { transform: scale(0.94); }
+.sat-toggle { bottom: 202px; }
 .view-toggle:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
@@ -669,3 +671,25 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   padding-top: 10px;
 }
 .resident-foot { margin: 10px 0 0; font-size: 11.5px; opacity: 0.65; line-height: 1.4; }
+
+/* Slim top banner to open the resident (phone) view. */
+.resident-banner {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 7;
+  padding: 6px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(22, 28, 24, 0.55);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  color: #f1f5ef;
+  font: 500 12.5px/1 var(--font);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: background 150ms ease;
+}
+.resident-banner:hover { background: rgba(255, 255, 255, 0.16); }
