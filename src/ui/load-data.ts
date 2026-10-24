@@ -90,6 +90,15 @@ export async function loadTowns(): Promise<TownInfo[]> {
   }));
 }
 
+/**
+ * Load the "All of Inner Core" town outlines (region/town-outlines.geojson),
+ * each feature carrying town, slug, ejBlockGroups, avgMinorityPct and a `built`
+ * flag. Returns null when the region file is absent.
+ */
+export async function loadRegionOutlines(): Promise<any | null> {
+  return fetchJson("/data/region/town-outlines.geojson");
+}
+
 type Ring = [number, number][];
 
 /** Outer rings of every Polygon/MultiPolygon in a GeoJSON. */

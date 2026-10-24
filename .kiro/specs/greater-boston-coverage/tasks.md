@@ -46,7 +46,7 @@ requirements it satisfies. `[ ]` = open, `[x]` = done.
 - [x] **C2. `load-data` by slug.** Parameterize loading by town slug; region
   data loads once. (supports R3.2, R4.*)
 
-- [ ] **C3. Regional overview.** `RegionOverview.tsx`: town outlines shaded by
+- [x] **C3. Regional overview.** `RegionOverview.tsx`: town outlines shaded by
   EJ-resident share, labeled legend, click-to-open, accessible parallel list.
   (R3.3, R3.4, R3.5)
 

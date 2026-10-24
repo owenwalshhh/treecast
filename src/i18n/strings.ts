@@ -107,6 +107,16 @@ export const STRINGS = {
   whyEquity: { en: "Neighborhood need", es: "Necesidad del barrio" },
   whyUtility: { en: "Electric utility", es: "Compañía eléctrica" },
   whyEjCriteria: { en: "EJ criteria", es: "Criterios JA" },
+  overviewToggle: { en: "All of Inner Core", es: "Todo el Inner Core" },
+  overviewBack: { en: "Back to town", es: "Volver al pueblo" },
+  overviewLegendTitle: { en: "EJ block groups", es: "Grupos de JA" },
+  overviewLegendNote: {
+    en: "Count of EJ-flagged 2020 block groups (MassGIS). Darker = more.",
+    es: "Número de grupos marcados de JA 2020 (MassGIS). Más oscuro = más.",
+  },
+  overviewListTitle: { en: "Inner Core towns", es: "Pueblos del Inner Core" },
+  overviewOpen: { en: "Open this town", es: "Abrir este pueblo" },
+  overviewNotBuilt: { en: "not built yet", es: "sin construir" },
   reason_westBest: {
     en: "West/southwest side: the best spot. Shade here blocks hot summer afternoon sun.",
     es: "Lado oeste/suroeste: el mejor lugar. La sombra bloquea el sol caliente de la tarde en verano.",

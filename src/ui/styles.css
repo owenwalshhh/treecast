@@ -576,3 +576,23 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
 }
+
+/* "All of Inner Core" overview toggle, under the town picker. */
+.overview-toggle {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  font: 500 13px/1 var(--font);
+  cursor: pointer;
+  text-align: left;
+  transition: background 150ms ease;
+}
+.overview-toggle:hover { background: rgba(255, 255, 255, 0.12); }
+.overview-toggle[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.35);
+}

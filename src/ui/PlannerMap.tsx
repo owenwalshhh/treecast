@@ -22,8 +22,8 @@ import { resolveHeight } from "../optimizer/building-height";
 // Vector Positron basemap. Primary is OpenFreeMap; CARTO Positron is the
 // fallback if OpenFreeMap's style fails to load. Attribution is shown via the
 // map's own control (OpenFreeMap + OpenStreetMap, plus CARTO on fallback).
-const POSITRON_PRIMARY = "https://tiles.openfreemap.org/styles/positron";
-const POSITRON_FALLBACK =
+export const POSITRON_PRIMARY = "https://tiles.openfreemap.org/styles/positron";
+export const POSITRON_FALLBACK =
   "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
 // Source-layers we KEEP labels/symbols for: street names and place/neighborhood

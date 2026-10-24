@@ -15,6 +15,7 @@ import { Controls } from "./Controls";
 import { Section } from "./Section";
 import { TownPicker } from "./TownPicker";
 import { PlannerMap } from "./PlannerMap";
+import { RegionOverview } from "./RegionOverview";
 import { PlanTable } from "./PlanTable";
 import { WhyHere } from "./WhyHere";
 import { SourcesPanel } from "./SourcesPanel";
@@ -36,6 +37,7 @@ export function App() {
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [drawing, setDrawing] = useState(false);
   const [area, setArea] = useState<[number, number][] | null>(null);
+  const [overview, setOverview] = useState(false);
 
   // Load the list of built towns once, then load the first town's data.
   useEffect(() => {
@@ -56,7 +58,9 @@ export function App() {
   // fly the map to its bounds (handled by PlannerMap's fitCity once data lands).
   function pickTown(slug: string) {
     const tw = towns.find((t) => t.slug === slug);
-    if (!tw || slug === activeSlug) return;
+    if (!tw) return;
+    setOverview(false);
+    if (slug === activeSlug && data) return; // already loaded and showing
     setActiveSlug(slug);
     setOptimized(null);
     setPickedId(null);
@@ -131,26 +135,30 @@ export function App() {
     <div className="app-shell">
       {/* Full-bleed map underneath everything. */}
       <div className="map-full">
-        <PlannerMap
-          candidates={candidates}
-          plan={activePlan}
-          center={data?.center ?? { lng: -71.0331, lat: 42.3918 }}
-          buildings={data?.buildings ?? null}
-          shadeGrid={data?.shadeGrid ?? null}
-          cityBoundary={data?.cityBoundary ?? null}
-          water={data?.water ?? null}
-          showShade={showShade}
-          animationKey={animationKey}
-          year={year}
-          drawing={drawing}
-          area={area}
-          onAreaChange={(ring) => {
-            setArea(ring);
-            setDrawing(false);
-          }}
-          onPick={setPickedId}
-          onReady={setMapControls}
-        />
+        {overview ? (
+          <RegionOverview lang={lang} onOpenTown={pickTown} />
+        ) : (
+          <PlannerMap
+            candidates={candidates}
+            plan={activePlan}
+            center={data?.center ?? { lng: -71.0331, lat: 42.3918 }}
+            buildings={data?.buildings ?? null}
+            shadeGrid={data?.shadeGrid ?? null}
+            cityBoundary={data?.cityBoundary ?? null}
+            water={data?.water ?? null}
+            showShade={showShade}
+            animationKey={animationKey}
+            year={year}
+            drawing={drawing}
+            area={area}
+            onAreaChange={(ring) => {
+              setArea(ring);
+              setDrawing(false);
+            }}
+            onPick={setPickedId}
+            onReady={setMapControls}
+          />
+        )}
       </div>
 
       {/* Floating control panel, top-left — collapsible sections. */}
@@ -167,6 +175,14 @@ export function App() {
           lang={lang}
           onPick={pickTown}
         />
+        <button
+          type="button"
+          className="overview-toggle"
+          aria-pressed={overview}
+          onClick={() => setOverview((v) => !v)}
+        >
+          {overview ? `← ${t("overviewBack", lang)}` : `🗺 ${t("overviewToggle", lang)}`}
+        </button>
 
         <div style={{ marginTop: 6 }}>
           <Section title={t("sectionPlan", lang)} defaultOpen>
