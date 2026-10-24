@@ -45,6 +45,7 @@ const MARGIN = process.env.MARGIN || "0.004";
 const OVT_DIR = join(RAW, "overture");
 const OVT_BUILDINGS = join(OVT_DIR, "buildings.parquet");
 const OVT_ROADS = join(OVT_DIR, "roads.parquet");
+const OVT_DIVISIONS = join(OVT_DIR, "divisions.parquet");
 const S3_LATEST =
   "' || getvariable('latest') || '"; // used only in the S3 fallback glob below
 // Resolve the read_parquet SOURCE for a theme: local cache if present AND
@@ -70,6 +71,11 @@ function sourceFor(theme) {
     return cacheUsable(OVT_BUILDINGS)
       ? OVT_BUILDINGS.replace(/\\/g, "/")
       : `s3://overturemaps-us-west-2/release/${S3_LATEST}/theme=buildings/type=building/*`;
+  }
+  if (theme === "divisions") {
+    return cacheUsable(OVT_DIVISIONS)
+      ? OVT_DIVISIONS.replace(/\\/g, "/")
+      : `s3://overturemaps-us-west-2/release/${S3_LATEST}/theme=divisions/type=division_area/*`;
   }
   return cacheUsable(OVT_ROADS)
     ? OVT_ROADS.replace(/\\/g, "/")
@@ -183,7 +189,7 @@ function featureCount(p) {
 // into local parquet (step 00c), so every town then reads locally. Skips if the
 // cache already exists. Returns true if the local cache is present afterward.
 function prefetchOverture() {
-  if (cacheUsable(OVT_BUILDINGS) && cacheUsable(OVT_ROADS)) {
+  if (cacheUsable(OVT_BUILDINGS) && cacheUsable(OVT_ROADS) && cacheUsable(OVT_DIVISIONS)) {
     console.log("== Overture cache present — towns read locally ==");
     return true;
   }
@@ -203,7 +209,14 @@ function prefetchOverture() {
   }
   mkdirSync(OVT_DIR, { recursive: true });
   console.log(`== prefetching Overture for the whole region (one download) ==\n   bbox ${bbox.west},${bbox.south} .. ${bbox.east},${bbox.north}`);
-  // Buildings FIRST — the critical layer. If this fails, towns fall back to S3.
+  // Divisions FIRST (small) — needed by bbox + boundary, the steps that 429.
+  if (!cacheUsable(OVT_DIVISIONS)) {
+    try {
+      console.log("   downloading divisions (MA localities)…");
+      runSql("00c-prefetch-divisions.sql", { DIVISIONS_OUT: OVT_DIVISIONS.replace(/\\/g, "/") });
+    } catch (e) { console.error("   divisions prefetch failed:", e.message); }
+  }
+  // Buildings — the critical layer. If this fails, towns fall back to S3.
   if (!cacheUsable(OVT_BUILDINGS)) {
     try {
       console.log("   downloading buildings…");
@@ -224,8 +237,8 @@ function prefetchOverture() {
       });
     } catch (e) { console.error("   roads prefetch failed (towns will read S3 roads):", e.message); }
   }
-  const b = cacheUsable(OVT_BUILDINGS), r = cacheUsable(OVT_ROADS);
-  console.log(`== Overture cache: buildings ${b ? "local ✓" : "S3 fallback"}, roads ${r ? "local ✓" : "S3 fallback"} ==`);
+  const b = cacheUsable(OVT_BUILDINGS), r = cacheUsable(OVT_ROADS), d = cacheUsable(OVT_DIVISIONS);
+  console.log(`== Overture cache: divisions ${d ? "local ✓" : "S3 fallback"}, buildings ${b ? "local ✓" : "S3 fallback"}, roads ${r ? "local ✓" : "S3 fallback"} ==`);
   return b;
 }
 
@@ -244,7 +257,9 @@ function buildOne(city) {
     area = JSON.parse(readFileSync(areaOut, "utf8"));
   } else {
     const rawArea = join(tmpdir(), `tc-area-${slug}.json`);
-    runSql("00-derive-area.sql", { CITY: city, MARGIN, OUT: rawArea.replace(/\\/g, "/") });
+    const dSrc = sourceFor("divisions");
+    const dLatest = dSrc.startsWith("s3://") ? "SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');" : "";
+    runSql("00-derive-area.sql", { CITY: city, MARGIN, SOURCE: dSrc, LATEST_SETUP: dLatest, OUT: rawArea.replace(/\\/g, "/") });
     if (!existsSync(rawArea)) { console.error(`  !! no boundary for ${city}`); return false; }
     area = JSON.parse(readFileSync(rawArea, "utf8"));
     writeFileSync(areaOut, JSON.stringify(area, null, 2));
@@ -255,7 +270,9 @@ function buildOne(city) {
   // 1) boundary. Reuse the cached boundary file if present (same 429 reason).
   console.log("  [1/6] boundary…");
   if (!existsSync(bnd)) {
-    runSql("00b-boundary.sql", { CITY: city, OUT: bnd.replace(/\\/g, "/") });
+    const dSrc = sourceFor("divisions");
+    const dLatest = dSrc.startsWith("s3://") ? "SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');" : "";
+    runSql("00b-boundary.sql", { CITY: city, SOURCE: dSrc, LATEST_SETUP: dLatest, OUT: bnd.replace(/\\/g, "/") });
   }
 
   // 2) buildings, clipped. Only fetch Overture's STAC 'latest' when actually

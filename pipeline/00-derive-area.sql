@@ -17,14 +17,13 @@ INSTALL spatial;  LOAD spatial;
 SET s3_region = 'us-west-2';
 CREATE SECRET IF NOT EXISTS anon (TYPE s3, PROVIDER config, KEY_ID '', SECRET '', REGION 'us-west-2');
 
-SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');
+${LATEST_SETUP}
 
 COPY (
   WITH city AS (
     SELECT geometry
     FROM read_parquet(
-      's3://overturemaps-us-west-2/release/' || getvariable('latest') ||
-        '/theme=divisions/type=division_area/*',
+      '${SOURCE}',
       hive_partitioning = 1
     )
     WHERE names.primary = '${CITY}'
