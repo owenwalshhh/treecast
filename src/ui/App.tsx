@@ -406,32 +406,31 @@ export function App() {
         </div>
       )}
 
-      {/* Empty state — table pressed but no plan yet. */}
+      {/* Empty state — table pressed but no plan yet. Same warning card style. */}
       {showTable && !activePlan && (
         <div
           className="glass"
-          role="status"
+          role="alertdialog"
+          aria-label={t("tableEmpty", lang)}
           style={{
-            position: "fixed",
-            left: 16,
-            right: 78,
-            bottom: 16,
-            padding: "14px 16px",
-            zIndex: 6,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 340,
+            padding: 20,
+            zIndex: 20,
+            textAlign: "center",
           }}
         >
-          <span>{t("tableEmpty", lang)}</span>
-          <button
-            type="button"
-            aria-label={t("whyClose", lang)}
-            onClick={() => setShowTable(false)}
-            style={{ border: "none", background: "none", fontSize: 18, cursor: "pointer", color: "inherit" }}
-          >
-            ✕
+          <div style={{ color: "var(--warn)", display: "flex", justifyContent: "center", marginBottom: 8 }}>
+            <WarnIcon size={34} />
+          </div>
+          <p style={{ margin: "0 0 14px", fontSize: 13.5, opacity: 0.85, lineHeight: 1.45 }}>
+            {t("tableEmpty", lang)}
+          </p>
+          <button type="button" className="primary" onClick={() => setShowTable(false)}>
+            {t("warnOk", lang)}
           </button>
         </div>
       )}
