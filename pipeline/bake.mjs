@@ -201,7 +201,13 @@ for (const city of towns) {
   const chelseaLegacy = slug === "chelsea" && existsSync(join(DATA, "candidate-sites.geojson")) && !existsSync(join(DATA, "chelsea"));
   const already = chelseaLegacy || existsSync(join(DATA, slug, "candidate-sites.geojson"));
   if (!force && already) { console.log(`-- skip ${city} (already built)`); skipped++; continue; }
-  try { buildOne(city) ? built++ : failed++; } catch (e) { console.error(`  !! ${city}: ${e.message}`); failed++; }
+  let ok = false;
+  try { ok = buildOne(city); ok ? built++ : failed++; } catch (e) { console.error(`  !! ${city}: ${e.message}`); failed++; }
+  // Rebuild the index after EACH town so a finished town appears in the app's
+  // picker right away (refresh the dev server), instead of only at run's end.
+  if (ok) {
+    try { execFileSync("node", [join(PIPE, "build-index.mjs")], { stdio: "inherit" }); } catch {}
+  }
 }
 
 // Town outlines (for the overview) + the public index, AFTER towns are built.
