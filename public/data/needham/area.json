@@ -1,0 +1,16 @@
+{
+  "name": "Needham",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.30527090000001,
+    "south": 42.2508391,
+    "east": -71.18419879999999,
+    "north": 42.320515
+  },
+  "center": {
+    "lng": -71.24473485,
+    "lat": 42.285677050000004
+  },
+  "town_name_ej": "Needham",
+  "town_name_utility": "NEEDHAM"
+}

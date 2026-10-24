@@ -1,0 +1,16 @@
+{
+  "name": "Somerville",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.13863500000001,
+    "south": 42.368526800000005,
+    "east": -71.0686884,
+    "north": 42.422155499999995
+  },
+  "center": {
+    "lng": -71.1036617,
+    "lat": 42.39534115
+  },
+  "town_name_ej": "Somerville",
+  "town_name_utility": "SOMERVILLE"
+}

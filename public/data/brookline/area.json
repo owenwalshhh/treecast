@@ -1,0 +1,16 @@
+{
+  "name": "Brookline",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.18293510000001,
+    "south": 42.2905881,
+    "east": -71.1015164,
+    "north": 42.355755099999996
+  },
+  "center": {
+    "lng": -71.14222575,
+    "lat": 42.323171599999995
+  },
+  "town_name_ej": "Brookline",
+  "town_name_utility": "BROOKLINE"
+}

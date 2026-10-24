@@ -1,0 +1,16 @@
+{
+  "name": "Quincy",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.09718960000001,
+    "south": 42.2001797,
+    "east": -70.9337406,
+    "north": 42.3178078
+  },
+  "center": {
+    "lng": -71.0154651,
+    "lat": 42.25899375
+  },
+  "town_name_ej": "Quincy",
+  "town_name_utility": "QUINCY"
+}

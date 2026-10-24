@@ -1,0 +1,16 @@
+{
+  "name": "Belmont",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.2159464,
+    "south": 42.371057900000004,
+    "east": -71.14824449999999,
+    "north": 42.419320299999995
+  },
+  "center": {
+    "lng": -71.18209544999999,
+    "lat": 42.395189099999996
+  },
+  "town_name_ej": "Belmont",
+  "town_name_utility": "BELMONT"
+}

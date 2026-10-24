@@ -1,0 +1,16 @@
+{
+  "name": "Waltham",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.2900312,
+    "south": 42.3496377,
+    "east": -71.1901707,
+    "north": 42.4284463
+  },
+  "center": {
+    "lng": -71.24010095,
+    "lat": 42.389042
+  },
+  "town_name_ej": "Waltham",
+  "town_name_utility": "WALTHAM"
+}

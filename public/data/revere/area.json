@@ -1,0 +1,16 @@
+{
+  "name": "Revere",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.03718090000001,
+    "south": 42.3841648,
+    "east": -70.9451485,
+    "north": 42.4541176
+  },
+  "center": {
+    "lng": -70.99116470000001,
+    "lat": 42.4191412
+  },
+  "town_name_ej": "Revere",
+  "town_name_utility": "REVERE"
+}

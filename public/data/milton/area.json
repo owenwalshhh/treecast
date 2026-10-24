@@ -1,0 +1,16 @@
+{
+  "name": "Milton",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.1347423,
+    "south": 42.1967118,
+    "east": -71.02743489999999,
+    "north": 42.2820295
+  },
+  "center": {
+    "lng": -71.08108859999999,
+    "lat": 42.23937065
+  },
+  "town_name_ej": "Milton",
+  "town_name_utility": "MILTON"
+}

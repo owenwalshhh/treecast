@@ -1,0 +1,16 @@
+{
+  "name": "Arlington",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.2066422,
+    "south": 42.3934092,
+    "east": -71.1282098,
+    "north": 42.4402876
+  },
+  "center": {
+    "lng": -71.167426,
+    "lat": 42.4168484
+  },
+  "town_name_ej": "Arlington",
+  "town_name_utility": "ARLINGTON"
+}

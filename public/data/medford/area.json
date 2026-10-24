@@ -1,0 +1,16 @@
+{
+  "name": "Medford",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.1538864,
+    "south": 42.391497300000005,
+    "east": -71.06729659999999,
+    "north": 42.4574451
+  },
+  "center": {
+    "lng": -71.1105915,
+    "lat": 42.4244712
+  },
+  "town_name_ej": "Medford",
+  "town_name_utility": "MEDFORD"
+}

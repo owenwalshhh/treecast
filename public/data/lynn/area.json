@@ -1,0 +1,16 @@
+{
+  "name": "Lynn",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.0156206,
+    "south": 42.4034144,
+    "east": -70.81149049999999,
+    "north": 42.516267199999994
+  },
+  "center": {
+    "lng": -70.91355555,
+    "lat": 42.459840799999995
+  },
+  "town_name_ej": "Lynn",
+  "town_name_utility": "LYNN"
+}

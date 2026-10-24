@@ -1,0 +1,16 @@
+{
+  "name": "Newton",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.2743252,
+    "south": 42.2789427,
+    "east": -71.1528867,
+    "north": 42.371825199999996
+  },
+  "center": {
+    "lng": -71.21360595,
+    "lat": 42.32538395
+  },
+  "town_name_ej": "Newton",
+  "town_name_utility": "NEWTON"
+}

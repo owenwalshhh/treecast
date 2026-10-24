@@ -1,0 +1,16 @@
+{
+  "name": "Cambridge",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.16439890000001,
+    "south": 42.3484025,
+    "east": -71.05998439999999,
+    "north": 42.4082593
+  },
+  "center": {
+    "lng": -71.11219165,
+    "lat": 42.378330899999995
+  },
+  "town_name_ej": "Cambridge",
+  "town_name_utility": "CAMBRIDGE"
+}

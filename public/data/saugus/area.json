@@ -1,0 +1,16 @@
+{
+  "name": "Saugus",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.0582145,
+    "south": 42.425916,
+    "east": -70.9644764,
+    "north": 42.5091922
+  },
+  "center": {
+    "lng": -71.01134545,
+    "lat": 42.4675541
+  },
+  "town_name_ej": "Saugus",
+  "town_name_utility": "SAUGUS"
+}

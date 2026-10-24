@@ -1,0 +1,16 @@
+{
+  "name": "Malden",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.09344610000001,
+    "south": 42.408546300000005,
+    "east": -71.0163778,
+    "north": 42.448709
+  },
+  "center": {
+    "lng": -71.05491195,
+    "lat": 42.42862765
+  },
+  "town_name_ej": "Malden",
+  "town_name_utility": "MALDEN"
+}

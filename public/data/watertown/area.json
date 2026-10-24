@@ -1,0 +1,16 @@
+{
+  "name": "Watertown",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.2210306,
+    "south": 42.3545322,
+    "east": -71.1359918,
+    "north": 42.390040299999995
+  },
+  "center": {
+    "lng": -71.1785112,
+    "lat": 42.37228625
+  },
+  "town_name_ej": "Watertown",
+  "town_name_utility": "WATERTOWN"
+}

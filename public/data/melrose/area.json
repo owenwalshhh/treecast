@@ -1,0 +1,16 @@
+{
+  "name": "Melrose",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.0869193,
+    "south": 42.434840300000005,
+    "east": -71.02183559999999,
+    "north": 42.4799249
+  },
+  "center": {
+    "lng": -71.05437745,
+    "lat": 42.4573826
+  },
+  "town_name_ej": "Melrose",
+  "town_name_utility": "MELROSE"
+}

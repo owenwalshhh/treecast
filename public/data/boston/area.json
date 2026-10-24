@@ -1,0 +1,16 @@
+{
+  "name": "Boston",
+  "note": "Auto-derived bbox from Overture divisions.",
+  "bbox": {
+    "west": -71.1952442,
+    "south": 42.223914900000004,
+    "east": -70.8004881,
+    "north": 42.400977499999996
+  },
+  "center": {
+    "lng": -70.99786615,
+    "lat": 42.3124462
+  },
+  "town_name_ej": "Boston",
+  "town_name_utility": "BOSTON"
+}

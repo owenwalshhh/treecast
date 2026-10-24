@@ -1,7 +1,7 @@
 {
   "source": "https://www.mapc.org/get-involved/subregions/icc/",
   "subregion": "MAPC Inner Core Committee (ICC)",
-  "note": "Only towns the pipeline has built appear here. base points at each town's data folder; Chelsea may use the legacy flat /data path.",
+  "note": "A town appears once it has buildings (its fast data). hasPlanner=true means it also has candidate-sites + shade (the full optimizer/shade). base points at each town's data folder; Chelsea may use the legacy flat /data path.",
   "towns": [
     {
       "name": "Chelsea",
@@ -9,7 +9,8 @@
       "base": "/data",
       "buildings": 17834,
       "candidates": 2813,
-      "bytes": 9195596
+      "hasPlanner": true,
+      "bytes": 9220337
     },
     {
       "name": "Everett",
@@ -17,7 +18,179 @@
       "base": "/data/everett",
       "buildings": 9966,
       "candidates": 3817,
-      "bytes": 6423620
+      "hasPlanner": true,
+      "bytes": 6437187
+    },
+    {
+      "name": "Revere",
+      "slug": "revere",
+      "base": "/data/revere",
+      "buildings": 12680,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 5381778
+    },
+    {
+      "name": "Arlington",
+      "slug": "arlington",
+      "base": "/data/arlington",
+      "buildings": 15395,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 6730497
+    },
+    {
+      "name": "Belmont",
+      "slug": "belmont",
+      "base": "/data/belmont",
+      "buildings": 9873,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 4581276
+    },
+    {
+      "name": "Boston",
+      "slug": "boston",
+      "base": "/data/boston",
+      "buildings": 105521,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 52980941
+    },
+    {
+      "name": "Brookline",
+      "slug": "brookline",
+      "base": "/data/brookline",
+      "buildings": 10129,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 6152884
+    },
+    {
+      "name": "Cambridge",
+      "slug": "cambridge",
+      "base": "/data/cambridge",
+      "buildings": 14721,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 9337119
+    },
+    {
+      "name": "Lynn",
+      "slug": "lynn",
+      "base": "/data/lynn",
+      "buildings": 7177,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 3049404
+    },
+    {
+      "name": "Malden",
+      "slug": "malden",
+      "base": "/data/malden",
+      "buildings": 14478,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 6278264
+    },
+    {
+      "name": "Medford",
+      "slug": "medford",
+      "base": "/data/medford",
+      "buildings": 18078,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 8178665
+    },
+    {
+      "name": "Melrose",
+      "slug": "melrose",
+      "base": "/data/melrose",
+      "buildings": 11447,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 4784128
+    },
+    {
+      "name": "Milton",
+      "slug": "milton",
+      "base": "/data/milton",
+      "buildings": 11233,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 5110775
+    },
+    {
+      "name": "Needham",
+      "slug": "needham",
+      "base": "/data/needham",
+      "buildings": 7508,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 3615235
+    },
+    {
+      "name": "Newton",
+      "slug": "newton",
+      "base": "/data/newton",
+      "buildings": 26111,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 13213270
+    },
+    {
+      "name": "Quincy",
+      "slug": "quincy",
+      "base": "/data/quincy",
+      "buildings": 26369,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 11537826
+    },
+    {
+      "name": "Saugus",
+      "slug": "saugus",
+      "base": "/data/saugus",
+      "buildings": 10529,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 4626520
+    },
+    {
+      "name": "Somerville",
+      "slug": "somerville",
+      "base": "/data/somerville",
+      "buildings": 15121,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 7389507
+    },
+    {
+      "name": "Waltham",
+      "slug": "waltham",
+      "base": "/data/waltham",
+      "buildings": 7992,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 4361013
+    },
+    {
+      "name": "Watertown",
+      "slug": "watertown",
+      "base": "/data/watertown",
+      "buildings": 10207,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 5338453
+    },
+    {
+      "name": "Winthrop",
+      "slug": "winthrop",
+      "base": "/data/winthrop",
+      "buildings": 5703,
+      "candidates": 0,
+      "hasPlanner": false,
+      "bytes": 2351826
     }
   ]
 }
