@@ -16,6 +16,7 @@ import type { GeoCandidate } from "./demo-data";
 import type { Plan } from "../optimizer/types";
 import { crownDiameterFt } from "../optimizer/growth";
 import { GROWTH } from "../optimizer/coefficients";
+import { resolveHeight } from "../optimizer/building-height";
 
 // A free raster basemap (OpenStreetMap tiles). No key needed for a demo.
 // Vector Positron basemap. Primary is OpenFreeMap; CARTO Positron is the
@@ -110,6 +111,7 @@ export function PlannerMap({
   candidates,
   plan,
   center,
+  buildings,
   shadeGrid,
   cityBoundary,
   water,
@@ -127,6 +129,12 @@ export function PlannerMap({
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const timersRef = useRef<number[]>([]);
   const byId = useRef<Map<string, GeoCandidate>>(new Map());
+
+  // 2D / 3D view. In 3D, buildings extrude by height and the camera pitches
+  // once zoomed to 16+. The user can force 2D with the corner toggle.
+  const [view3d, setView3d] = useState(false);
+  const view3dRef = useRef(view3d);
+  view3dRef.current = view3d;
 
   // Overlays driven by the draw effect: a live sqft label at the selection
   // centroid, and a tip that follows the cursor while drawing.
@@ -237,6 +245,92 @@ export function PlannerMap({
     if (map.isStyleLoaded()) draw();
     else map.once("load", draw);
   }, [candidates]);
+
+  // 3D buildings: a fill-extrusion layer from the real footprints, drawn only
+  // at zoom 16+. Height uses the building's `height` (meters); a missing height
+  // falls back to 8 m and is flagged `heightEstimated` (greater-boston R5).
+  // The layer's own min-zoom hides it below 16, so the view is flat when zoomed
+  // out. Rebuilt when the building set (town) changes.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const bgj = buildings as any;
+    const draw = () => {
+      if (map.getLayer("buildings-3d")) map.removeLayer("buildings-3d");
+      if (map.getSource("buildings-3d")) map.removeSource("buildings-3d");
+      if (!bgj?.features?.length) return;
+      // Stamp a resolved height + estimated flag onto each feature so the paint
+      // expression is simple and the flag is inspectable.
+      const feats = bgj.features.map((f: any) => {
+        const { renderHeight, estimated } = resolveHeight(f.properties?.height);
+        return {
+          ...f,
+          properties: {
+            ...f.properties,
+            renderHeight,
+            heightEstimated: estimated ? 1 : 0,
+          },
+        };
+      });
+      map.addSource("buildings-3d", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: feats },
+      });
+      map.addLayer({
+        id: "buildings-3d",
+        type: "fill-extrusion",
+        source: "buildings-3d",
+        minzoom: 16, // flat below zoom 16
+        layout: { visibility: view3dRef.current ? "visible" : "none" },
+        paint: {
+          // Estimated-height buildings read a touch lighter/cooler so the guess
+          // is visible, not hidden.
+          "fill-extrusion-color": [
+            "case",
+            ["==", ["get", "heightEstimated"], 1],
+            "#b7c3cc",
+            "#9aa7b0",
+          ],
+          "fill-extrusion-height": ["get", "renderHeight"],
+          "fill-extrusion-base": 0,
+          "fill-extrusion-opacity": 0.85,
+        },
+      });
+    };
+    if (map.isStyleLoaded()) draw();
+    else map.once("load", draw);
+  }, [buildings]);
+
+  // Keep the 3D layer's visibility and the camera pitch in sync with the
+  // view3d toggle AND the current zoom. Pitch to 45° only when in 3D and zoomed
+  // to 16+; flatten otherwise. Respect prefers-reduced-motion (no camera
+  // animation — jump instead).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const apply = () => {
+      if (map.getLayer("buildings-3d")) {
+        map.setLayoutProperty(
+          "buildings-3d",
+          "visibility",
+          view3d ? "visible" : "none",
+        );
+      }
+      const want3d = view3d && map.getZoom() >= 16;
+      const targetPitch = want3d ? 45 : 0;
+      if (Math.abs(map.getPitch() - targetPitch) > 0.5) {
+        if (reduce) map.setPitch(targetPitch);
+        else map.easeTo({ pitch: targetPitch, duration: 500 });
+      }
+    };
+    apply();
+    map.on("zoomend", apply);
+    return () => {
+      map.off("zoomend", apply);
+    };
+  }, [view3d]);
 
   // Shade overlay: a fixed-resolution colored RASTER (red=no shade, green=full
   // shade), pinned to the data bounds and scaled like an image — so every pixel
@@ -582,6 +676,18 @@ export function PlannerMap({
           <strong>Double-click</strong> — finish
         </div>
       )}
+      {/* 2D / 3D toggle — top-right corner, keyboard-accessible. */}
+      <button
+        type="button"
+        className="glass view-toggle"
+        data-label={view3d ? "Switch to 2D map" : "Switch to 3D buildings"}
+        aria-pressed={view3d}
+        aria-label={view3d ? "Switch to 2D map" : "Switch to 3D buildings"}
+        title={view3d ? "2D" : "3D buildings (zoom in to see)"}
+        onClick={() => setView3d((v) => !v)}
+      >
+        {view3d ? "3D" : "2D"}
+      </button>
     </div>
   );
 }

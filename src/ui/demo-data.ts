@@ -16,6 +16,13 @@ export interface GeoCandidate extends CandidateSite {
   lat: number;
   /** Coarse neighborhood-density tier, for honest UI descriptions. */
   needTier?: "very-dense" | "dense" | "moderate" | "low-density";
+  /** Containing EJ block group (real MassGIS data), if the point falls in one. */
+  geoid?: string;
+  tract?: string;
+  ejCriteria?: string | null;
+  bgMinorityPct?: number | null;
+  bgLimitedEnglishPct?: number | null;
+  bgIncome?: number | null;
 }
 
 /** Sample center — a placeholder point (replace with the chosen demo area). */

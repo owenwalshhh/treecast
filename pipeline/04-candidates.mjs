@@ -27,7 +27,13 @@ import * as turf from "@turf/turf";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
-const OUT = join(ROOT, "public", "data", "candidate-sites.geojson");
+
+// Per-town folder (set by run.sh); falls back to the legacy flat layout.
+const TOWN_DIR = process.env.TREECAST_TOWN_DIR || join(ROOT, "public", "data");
+const AREA_FILE = process.env.TREECAST_TOWN_DIR
+  ? join(TOWN_DIR, "area.json")
+  : join(ROOT, "pipeline", "area.json");
+const OUT = join(TOWN_DIR, "candidate-sites.geojson");
 
 // --- tunables (ASSUMPTION; see coefficients.ts for the optimizer side) ---
 const GRID_SPACING_FT = 90; // grid step across the city (≈ planting granularity)
@@ -35,21 +41,21 @@ const ROAD_SETBACK_FT = 5; // keep off roads
 const MIN_WALL_FT = 8; // must be at least this far from a building
 const MAX_WALL_FT = 70; // and no use beyond this from any building
 
-const area = JSON.parse(readFileSync(join(ROOT, "pipeline", "area.json"), "utf8"));
+const area = JSON.parse(readFileSync(AREA_FILE, "utf8"));
 const buildings = JSON.parse(
-  readFileSync(join(ROOT, "public", "data", "buildings.geojson"), "utf8"),
+  readFileSync(join(TOWN_DIR, "buildings.geojson"), "utf8"),
 );
 let water = null;
 try {
-  water = JSON.parse(readFileSync(join(ROOT, "public", "data", "water.geojson"), "utf8"));
+  water = JSON.parse(readFileSync(join(TOWN_DIR, "water.geojson"), "utf8"));
 } catch {}
 let boundary = null;
 try {
-  boundary = JSON.parse(readFileSync(join(ROOT, "public", "data", "city-boundary.geojson"), "utf8"));
+  boundary = JSON.parse(readFileSync(join(TOWN_DIR, "city-boundary.geojson"), "utf8"));
 } catch {}
 let roads = null;
 try {
-  roads = JSON.parse(readFileSync(join(ROOT, "public", "data", "roads.geojson"), "utf8"));
+  roads = JSON.parse(readFileSync(join(TOWN_DIR, "roads.geojson"), "utf8"));
 } catch {}
 
 // --- polygon helpers (rings + point-in-polygon), no heavy deps ---
@@ -219,6 +225,59 @@ for (const f of features) {
   // A coarse tier label for the UI to describe honestly.
   f.properties.needTier =
     norm >= 0.75 ? "very-dense" : norm >= 0.5 ? "dense" : norm >= 0.25 ? "moderate" : "low-density";
+}
+
+// --- per-candidate block-group equity join (greater-boston R4) ---------------
+// Stamp each candidate with the EJ block group that CONTAINS it (real GEOID +
+// per-block-group minority / limited-English / income / EJ criteria), replacing
+// the single town-wide value. A point in no flagged block group is left without
+// one — honest, since the MassGIS EJ layer carries only flagged groups.
+let blockGroups = null;
+try {
+  blockGroups = JSON.parse(
+    readFileSync(join(ROOT, "public", "data", "region", "ej-block-groups.geojson"), "utf8"),
+  ).features;
+} catch {}
+
+if (blockGroups?.length) {
+  // Ray-cast point-in-polygon (mirrors src/optimizer/block-group.ts, which the
+  // property test guards).
+  const inRing2 = (lng, lat, ring) => {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+      if (yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi)
+        inside = !inside;
+    }
+    return inside;
+  };
+  const inGeom = (lng, lat, geom) => {
+    const polys = geom.type === "Polygon" ? [geom.coordinates] : geom.coordinates;
+    for (const poly of polys) {
+      if (!inRing2(lng, lat, poly[0])) continue;
+      let hole = false;
+      for (let h = 1; h < poly.length; h++)
+        if (inRing2(lng, lat, poly[h])) { hole = true; break; }
+      if (!hole) return true;
+    }
+    return false;
+  };
+  let matched = 0;
+  for (const f of features) {
+    const [lng, lat] = f.geometry.coordinates;
+    const bg = blockGroups.find((b) => b.geometry && inGeom(lng, lat, b.geometry));
+    if (bg) {
+      const p = bg.properties;
+      f.properties.geoid = p.geoid;
+      f.properties.tract = p.tract;
+      f.properties.ejCriteria = p.ejCriteria ?? null;
+      f.properties.bgMinorityPct = p.minorityPct ?? null;
+      f.properties.bgLimitedEnglishPct = p.limitedEnglishPct ?? null;
+      f.properties.bgIncome = p.income ?? null;
+      matched++;
+    }
+  }
+  console.log(`  joined ${matched}/${features.length} candidates to an EJ block group`);
 }
 
 writeFileSync(

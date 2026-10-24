@@ -1,0 +1,29 @@
+{
+  "source": "https://www.mapc.org/get-involved/subregions/icc/",
+  "subregion": "MAPC Inner Core Committee (ICC)",
+  "note": "The 21 municipalities of MAPC's Inner Core subregion, taken from MAPC's own ICC page. This is the authoritative build list; the pipeline builds these in order (Chelsea, Everett, Revere first per the demo plan).",
+  "accessed": "2026-10-24",
+  "towns": [
+    { "name": "Chelsea" },
+    { "name": "Everett" },
+    { "name": "Revere" },
+    { "name": "Arlington" },
+    { "name": "Belmont" },
+    { "name": "Boston" },
+    { "name": "Brookline" },
+    { "name": "Cambridge" },
+    { "name": "Lynn" },
+    { "name": "Malden" },
+    { "name": "Medford" },
+    { "name": "Melrose" },
+    { "name": "Milton" },
+    { "name": "Needham" },
+    { "name": "Newton" },
+    { "name": "Quincy" },
+    { "name": "Saugus" },
+    { "name": "Somerville" },
+    { "name": "Waltham" },
+    { "name": "Watertown" },
+    { "name": "Winthrop" }
+  ]
+}

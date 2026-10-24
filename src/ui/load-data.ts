@@ -20,10 +20,35 @@ export interface AppData {
   cityBoundary: unknown | null;
   /** Water polygons GeoJSON, or null. */
   water: unknown | null;
+  /** Town equity + utility summary (03-equity-summary.sql), or null. */
+  equity: EquitySummary | null;
   /** True if the real pipeline data loaded; false if we fell back to demo. */
   real: boolean;
   /** Map center. */
   center: { lng: number; lat: number };
+}
+
+/**
+ * Town-level equity + utility summary written by 03-equity-summary.sql.
+ *
+ * HONEST SCOPE: the saved MassGIS EJ extract has NO block-group geometry and NO
+ * GEOID (it was fetched with returnGeometry=false and only carries municipality
+ * names). So Treecast cannot assign a candidate to its CONTAINING block group,
+ * nor join LEAD energy burden by tract. These are TOWN-WIDE figures, shown as
+ * such. The per-block-group join (greater-boston R4) needs a geometry+GEOID EJ
+ * source that this extract does not provide.
+ */
+export interface EquitySummary {
+  town: string;
+  electric_utility: string | null;
+  ej_block_groups: number;
+  avg_minority_pct: number;
+  avg_limited_english_pct: number;
+  avg_block_group_income: number;
+  min_block_group_income: number;
+  max_block_group_income: number;
+  /** EJ criteria present in the town's flagged block groups, if derivable. */
+  criteria?: string[];
 }
 
 async function fetchJson(url: string): Promise<any | null> {
@@ -102,6 +127,7 @@ export async function loadAppData(base = "/data"): Promise<AppData> {
   const shadeGj = await fetchJson(`${b}/shade-grid.geojson`);
   const boundaryGj = await fetchJson(`${b}/city-boundary.geojson`);
   const waterGj = await fetchJson(`${b}/water.geojson`);
+  const equityGj = (await fetchJson(`${b}/equity-summary.json`)) as EquitySummary | null;
 
   if (sitesGj?.features?.length) {
     // Project lng/lat to local feet around the data's center so the optimizer's
@@ -142,7 +168,10 @@ export async function loadAppData(base = "/data"): Promise<AppData> {
           leafType: p.leafType as LeafType,
           equityNeed: Number(p.equityNeed),
         };
-        return { ...site, lng, lat, needTier: p.needTier };
+        return { ...site, lng, lat, needTier: p.needTier,
+          geoid: p.geoid, tract: p.tract, ejCriteria: p.ejCriteria,
+          bgMinorityPct: p.bgMinorityPct, bgLimitedEnglishPct: p.bgLimitedEnglishPct,
+          bgIncome: p.bgIncome };
       })
       .filter((c: GeoCandidate | null): c is GeoCandidate => c !== null);
 
@@ -153,6 +182,7 @@ export async function loadAppData(base = "/data"): Promise<AppData> {
         shadeGrid: shadeGj ?? null,
         cityBoundary: boundaryGj ?? null,
         water: waterGj ?? null,
+        equity: equityGj ?? null,
         real: true,
         center: { lng: lng0, lat: lat0 },
       };
@@ -168,6 +198,7 @@ export async function loadAppData(base = "/data"): Promise<AppData> {
     shadeGrid: shadeGj ?? null,
     cityBoundary: boundaryGj ?? null,
     water: waterGj ?? null,
+    equity: equityGj ?? null,
     real: false,
     center: {
       lng: demo.reduce((s: number, c: GeoCandidate) => s + c.lng, 0) / n,

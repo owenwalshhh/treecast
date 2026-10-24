@@ -105,6 +105,8 @@ export const STRINGS = {
   whyLeaf: { en: "Tree type", es: "Tipo de árbol" },
   whyDistance: { en: "Distance to wall", es: "Distancia a la pared" },
   whyEquity: { en: "Neighborhood need", es: "Necesidad del barrio" },
+  whyUtility: { en: "Electric utility", es: "Compañía eléctrica" },
+  whyEjCriteria: { en: "EJ criteria", es: "Criterios JA" },
   reason_westBest: {
     en: "West/southwest side: the best spot. Shade here blocks hot summer afternoon sun.",
     es: "Lado oeste/suroeste: el mejor lugar. La sombra bloquea el sol caliente de la tarde en verano.",
@@ -160,12 +162,24 @@ export const STRINGS = {
     es: "Los puntajes son un ranking relativo, no kWh ni dólares.",
   },
   limit2: {
-    en: "Equity need is one town-wide value until block-group geometry is added.",
-    es: "La equidad es un valor para todo el pueblo hasta añadir geometría por grupo.",
+    en: "Equity uses real EJ block groups; a site outside a flagged group has none.",
+    es: "La equidad usa grupos de JA reales; un sitio fuera de un grupo marcado no tiene.",
   },
   limit3: {
     en: "The tree-growth curve shape is an assumption, pending the i-Tree equation.",
     es: "La curva de crecimiento es una suposición, a la espera de la ecuación i-Tree.",
+  },
+  limit4: {
+    en: "Building heights are partly estimated: a missing height is drawn as 8 m and flagged.",
+    es: "Las alturas de edificios son en parte estimadas: una altura faltante se dibuja como 8 m.",
+  },
+  limit5: {
+    en: "Shade data exists only where the pipeline ran; a town not yet built has none.",
+    es: "Los datos de sombra existen solo donde corrió el proceso; un pueblo sin construir no tiene.",
+  },
+  limit6: {
+    en: "Any town outside MAPC's Inner Core needs a pipeline run before it appears.",
+    es: "Un pueblo fuera del Inner Core de MAPC necesita correr el proceso antes de aparecer.",
   },
 
   // Select-area tool

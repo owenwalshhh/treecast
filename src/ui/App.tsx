@@ -329,6 +329,7 @@ export function App() {
             lang,
           )}
           onClose={() => setPickedId(null)}
+          equity={data?.equity ?? null}
         />
       )}
 

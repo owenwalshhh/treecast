@@ -254,7 +254,7 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 .table-btn {
   position: absolute;
   right: 16px;
-  bottom: 148px;
+  bottom: 202px;
   z-index: 6;
   width: 46px;
   height: 46px;
@@ -304,9 +304,11 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 /* Rail + table + zoom hover labels (custom tooltip in the UI style). */
 .rail button[data-label],
 .table-btn[data-label],
+.view-toggle[data-label],
 .zoom-pill button[data-label] { position: relative; }
 .rail button[data-label]::after,
 .table-btn[data-label]::after,
+.view-toggle[data-label]::after,
 .zoom-pill button[data-label]::after {
   content: attr(data-label);
   position: absolute;
@@ -329,6 +331,7 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 }
 .rail button[data-label]:hover::after,
 .table-btn[data-label]:hover::after,
+.view-toggle[data-label]:hover::after,
 .zoom-pill button[data-label]:hover::after {
   opacity: 1;
   transform: translateY(-50%) translateX(0);
@@ -336,6 +339,7 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
 @media (prefers-reduced-motion: reduce) {
   .rail button[data-label]::after,
   .table-btn[data-label]::after,
+  .view-toggle[data-label]::after,
   .zoom-pill button[data-label]::after { transition: none; }
 }
 
@@ -542,3 +546,33 @@ input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
   white-space: nowrap;
 }
 .draw-tip strong { font-weight: 700; }
+
+/* 2D / 3D view toggle — bottom-right stack, above the table button, matching
+   the circular rail/zoom buttons. */
+.view-toggle {
+  position: absolute;
+  right: 16px;
+  bottom: 148px;
+  z-index: 6;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  font: 600 14px/1 var(--font);
+  color: #f1f5ef;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.view-toggle[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+.view-toggle:active { transform: scale(0.94); }
+.view-toggle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
