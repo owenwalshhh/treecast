@@ -46,17 +46,26 @@ const args = process.argv.slice(2);
 let force = false;
 let townOnly = false; // when set, skip region prep + finalize (parallel wrapper owns those)
 let verbose = false; // when set, print a heartbeat + DuckDB progress bar for long steps
+let smallFirst = false; // when set, bake towns smallest-area-first (quick wins before slow Boston)
 const requested = [];
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--force") force = true;
   else if (args[i] === "--town-only") townOnly = true;
   else if (args[i] === "--verbose" || args[i] === "-v") verbose = true;
+  else if (args[i] === "--small-first") smallFirst = true;
   else if (args[i] === "--town") requested.push(args[++i]);
   else if (args[i].startsWith("--town=")) requested.push(args[i].slice(7));
 }
 
-const buildList = JSON.parse(readFileSync(join(PIPE, "towns.json"), "utf8")).towns.map((t) => t.name);
-const towns = requested.length ? requested : buildList;
+const townDefs = JSON.parse(readFileSync(join(PIPE, "towns.json"), "utf8")).towns;
+const areaOf = Object.fromEntries(townDefs.map((t) => [t.name, t.areaSqMi ?? 999]));
+let buildListNames = townDefs.map((t) => t.name);
+if (smallFirst) buildListNames = [...buildListNames].sort((a, b) => areaOf[a] - areaOf[b]);
+
+const towns = requested.length ? requested : buildListNames;
+if (smallFirst && !requested.length) {
+  console.log("small-first order: " + towns.map((t) => `${t} (${areaOf[t]}mi²)`).join(", "));
+}
 
 /** Render a SQL template's ${VARS} and run it through duckdb via stdin. */
 // Does this DuckDB accept `geometry_always_xy`? v2.0 REQUIRES it for GDAL
