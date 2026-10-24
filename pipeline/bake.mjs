@@ -16,7 +16,7 @@
  * Requires: duckdb on PATH (or DUCKDB=/path), node. NO jq, sed, or bash.
  */
 
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, isAbsolute, resolve } from "node:path";
@@ -45,10 +45,12 @@ const slugify = (s) =>
 const args = process.argv.slice(2);
 let force = false;
 let townOnly = false; // when set, skip region prep + finalize (parallel wrapper owns those)
+let verbose = false; // when set, print a heartbeat + DuckDB progress bar for long steps
 const requested = [];
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--force") force = true;
   else if (args[i] === "--town-only") townOnly = true;
+  else if (args[i] === "--verbose" || args[i] === "-v") verbose = true;
   else if (args[i] === "--town") requested.push(args[++i]);
   else if (args[i].startsWith("--town=")) requested.push(args[i].slice(7));
 }
@@ -85,8 +87,28 @@ function runSql(file, vars) {
   if (supportsXy() && /LOAD spatial;/.test(sql)) {
     sql = sql.replace(/LOAD spatial;/, "LOAD spatial;\nSET geometry_always_xy = true;");
   }
+  // In verbose mode, turn on DuckDB's live progress bar so a long S3 scan
+  // (buildings/roads) shows a running percentage instead of silence.
+  if (verbose) {
+    sql = "PRAGMA enable_progress_bar;\nPRAGMA enable_print_progress_bar;\n" + sql;
+  }
   // duckdb reads the SQL from stdin — portable, no temp file needed.
-  execFileSync(DUCKDB, [], { input: sql, stdio: ["pipe", "inherit", "inherit"] });
+  if (!verbose) {
+    execFileSync(DUCKDB, [], { input: sql, stdio: ["pipe", "inherit", "inherit"] });
+    return;
+  }
+  // Verbose: run DuckDB with its progress bar (prints live % from DuckDB's own
+  // process) AND a Node heartbeat. Because execFileSync blocks Node's event
+  // loop, the heartbeat timer can't fire during it — so use the synchronous
+  // spawnSync but let DuckDB's inherited stderr stream the progress bar itself.
+  const started = Date.now();
+  process.stdout.write(`      ${new Date().toLocaleTimeString()} running ${file} — DuckDB progress bar on, Ctrl+C-safe\n`);
+  const r = spawnSync(DUCKDB, [], { input: sql, stdio: ["pipe", "inherit", "inherit"] });
+  const secs = Math.round((Date.now() - started) / 1000);
+  process.stdout.write(`      done ${file} (${secs}s)\n`);
+  if (r.status !== 0) {
+    throw new Error(`${file} exited ${r.status}${r.error ? ": " + r.error.message : ""}`);
+  }
 }
 
 function featureCount(p) {
