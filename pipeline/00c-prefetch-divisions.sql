@@ -15,7 +15,7 @@ CREATE SECRET IF NOT EXISTS anon (TYPE s3, PROVIDER config, KEY_ID '', SECRET ''
 SET VARIABLE latest = (SELECT latest FROM 'https://stac.overturemaps.org/catalog.json');
 
 COPY (
-  SELECT names, geometry
+  SELECT names, geometry, country, region, subtype
   FROM read_parquet(
     's3://overturemaps-us-west-2/release/' || getvariable('latest') ||
       '/theme=divisions/type=division_area/*',
