@@ -36,16 +36,20 @@ const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-
 
 // --- args ---
 const args = process.argv.slice(2);
-let jobs = 3, force = false;
+let jobs = 2, force = false, smallFirst = true;
 const requested = [];
 for (let i = 0; i < args.length; i++) {
-  if (args[i] === "--jobs") jobs = Math.max(1, parseInt(args[++i], 10) || 3);
+  if (args[i] === "--jobs") jobs = Math.max(1, parseInt(args[++i], 10) || 2);
   else if (args[i] === "--force") force = true;
+  else if (args[i] === "--no-small-first") smallFirst = false;
   else if (args[i] === "--town") requested.push(args[++i]);
   else if (args[i].startsWith("--town=")) requested.push(args[i].slice(7));
 }
 
-const buildList = JSON.parse(readFileSync(join(PIPE, "towns.json"), "utf8")).towns.map((t) => t.name);
+const townDefs = JSON.parse(readFileSync(join(PIPE, "towns.json"), "utf8")).towns;
+const areaOf = Object.fromEntries(townDefs.map((t) => [t.name, t.areaSqMi ?? 999]));
+let buildList = townDefs.map((t) => t.name);
+if (smallFirst) buildList = [...buildList].sort((a, b) => areaOf[a] - areaOf[b]);
 let towns = requested.length ? requested : buildList;
 
 // Skip already-built towns unless --force.
@@ -84,7 +88,11 @@ function bakeTown(name) {
     child.stdout.on("data", cap);
     child.stderr.on("data", cap);
     child.on("close", (code) => {
-      if (code === 0) { console.log(`  ok ${name}`); results.ok.push(name); }
+      if (code === 0) {
+        console.log(`  ok ${name}`); results.ok.push(name);
+        // Rebuild the index now so this town appears in the app's picker live.
+        try { execFileSync("node", [join(PIPE, "build-index.mjs")], { stdio: "ignore" }); } catch {}
+      }
       else { console.error(`  !! ${name} failed (code ${code}):\n${tail.trim()}`); results.fail.push(name); }
       resolve();
     });

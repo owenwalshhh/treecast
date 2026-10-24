@@ -96,6 +96,19 @@ function runSql(file, vars) {
   if (supportsXy() && /LOAD spatial;/.test(sql)) {
     sql = sql.replace(/LOAD spatial;/, "LOAD spatial;\nSET geometry_always_xy = true;");
   }
+  // Cap DuckDB's memory + threads. On a RAM-starved machine, DuckDB otherwise
+  // grabs most of the box for an Overture scan, forcing the OS to swap to disk
+  // (thrashing) — which makes even a tiny town crawl. Capping memory makes it
+  // spill to its own temp dir in a controlled way instead, usually FASTER here.
+  // Override with DUCKDB_MEMORY / DUCKDB_THREADS; defaults suit ~1-2 GB free.
+  const memLimit = process.env.DUCKDB_MEMORY || "1GB";
+  const threads = process.env.DUCKDB_THREADS || "2";
+  const caps = `SET memory_limit='${memLimit}';\nSET threads=${threads};\nSET preserve_insertion_order=false;\n`;
+  if (/LOAD spatial;/.test(sql)) {
+    sql = sql.replace(/LOAD spatial;/, "LOAD spatial;\n" + caps);
+  } else {
+    sql = caps + sql;
+  }
   // In verbose mode, turn on DuckDB's live progress bar so a long S3 scan
   // (buildings/roads) shows a running percentage instead of silence.
   if (verbose) {
