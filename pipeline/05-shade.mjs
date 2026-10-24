@@ -34,9 +34,16 @@ import SunCalc from "suncalc";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
-const area = JSON.parse(readFileSync(join(ROOT, "pipeline", "area.json"), "utf8"));
+// Per-town folder (set by run.sh). Each town keeps its own area.json + data; if
+// unset we fall back to the legacy flat layout (pipeline/area.json + public/data).
+const TOWN_DIR = process.env.TREECAST_TOWN_DIR || join(ROOT, "public", "data");
+const AREA_FILE = process.env.TREECAST_TOWN_DIR
+  ? join(TOWN_DIR, "area.json")
+  : join(ROOT, "pipeline", "area.json");
+
+const area = JSON.parse(readFileSync(AREA_FILE, "utf8"));
 const buildings = JSON.parse(
-  readFileSync(join(ROOT, "public", "data", "buildings.geojson"), "utf8"),
+  readFileSync(join(TOWN_DIR, "buildings.geojson"), "utf8"),
 );
 
 const { west, south, east, north } = area.bbox;
@@ -144,7 +151,7 @@ for (let i = 0; i < GRID; i++) {
   }
 }
 
-const out = join(ROOT, "public", "data", "shade-grid.geojson");
+const out = join(TOWN_DIR, "shade-grid.geojson");
 writeFileSync(out, JSON.stringify({
   type: "FeatureCollection",
   properties: {

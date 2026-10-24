@@ -14,3 +14,6 @@ dist/
 
 # TS build cache
 tsconfig.tsbuildinfo
+
+# pipeline runtime logs
+pipeline/bake.log

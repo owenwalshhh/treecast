@@ -1,0 +1,85 @@
+{
+  "note": "Count of EJ-flagged 2020 block groups per Inner Core town (MassGIS EJ2020).",
+  "towns": [
+    {
+      "town": "Boston",
+      "ejBlockGroups": 462
+    },
+    {
+      "town": "Cambridge",
+      "ejBlockGroups": 80
+    },
+    {
+      "town": "Lynn",
+      "ejBlockGroups": 70
+    },
+    {
+      "town": "Quincy",
+      "ejBlockGroups": 66
+    },
+    {
+      "town": "Malden",
+      "ejBlockGroups": 52
+    },
+    {
+      "town": "Somerville",
+      "ejBlockGroups": 51
+    },
+    {
+      "town": "Revere",
+      "ejBlockGroups": 44
+    },
+    {
+      "town": "Brookline",
+      "ejBlockGroups": 42
+    },
+    {
+      "town": "Medford",
+      "ejBlockGroups": 40
+    },
+    {
+      "town": "Waltham",
+      "ejBlockGroups": 37
+    },
+    {
+      "town": "Chelsea",
+      "ejBlockGroups": 36
+    },
+    {
+      "town": "Everett",
+      "ejBlockGroups": 33
+    },
+    {
+      "town": "Watertown",
+      "ejBlockGroups": 20
+    },
+    {
+      "town": "Arlington",
+      "ejBlockGroups": 17
+    },
+    {
+      "town": "Saugus",
+      "ejBlockGroups": 12
+    },
+    {
+      "town": "Milton",
+      "ejBlockGroups": 8
+    },
+    {
+      "town": "Newton",
+      "ejBlockGroups": 7
+    },
+    {
+      "town": "Winthrop",
+      "ejBlockGroups": 7
+    },
+    {
+      "town": "Melrose",
+      "ejBlockGroups": 6
+    },
+    {
+      "town": "Belmont",
+      "ejBlockGroups": 3
+    }
+  ]
+}

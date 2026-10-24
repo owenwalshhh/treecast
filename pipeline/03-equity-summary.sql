@@ -32,6 +32,9 @@ COPY (
     round(avg(limited_english_hh_pct), 1)     AS avg_limited_english_pct,
     round(avg(block_group_income))            AS avg_block_group_income,
     min(block_group_income)                   AS min_block_group_income,
-    max(block_group_income)                   AS max_block_group_income
+    max(block_group_income)                   AS max_block_group_income,
+    -- The distinct EJ criteria present across the town's flagged block groups
+    -- (e.g. "Income", "Minority and income"). Shown in "Why here?".
+    (SELECT list(DISTINCT criteria) FROM ej)  AS criteria
   FROM ej
 ) TO '${OUT}' WITH (FORMAT JSON, ARRAY false);

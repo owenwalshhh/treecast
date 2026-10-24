@@ -71,6 +71,9 @@ export function SourcesPanel({ lang }: { lang: Lang }) {
         <li>{t("limit1", lang)}</li>
         <li>{t("limit2", lang)}</li>
         <li>{t("limit3", lang)}</li>
+        <li>{t("limit4", lang)}</li>
+        <li>{t("limit5", lang)}</li>
+        <li>{t("limit6", lang)}</li>
       </ul>
     </section>
   );

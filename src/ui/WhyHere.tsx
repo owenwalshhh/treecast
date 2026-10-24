@@ -11,6 +11,8 @@ import { explain, type ReasonCode } from "../optimizer/explain";
 import type { PlannedTree } from "../optimizer/types";
 import { t, type Lang } from "../i18n/strings";
 import { directionName, tierPhrase, needTierOf } from "./describe";
+import type { EquitySummary } from "./load-data";
+import type { GeoCandidate } from "./demo-data";
 
 interface Props {
   tree: PlannedTree;
@@ -18,6 +20,8 @@ interface Props {
   onClose: () => void;
   /** Readable name like "Tree 3" (plan-order rank); falls back to the id. */
   name?: string;
+  /** Town equity + utility summary, shown as town-wide context. */
+  equity?: EquitySummary | null;
 }
 
 // Map a reason code to its i18n key (keys are reason_<code>).
@@ -25,7 +29,7 @@ function reasonText(code: ReasonCode, lang: Lang): string {
   return t(`reason_${code}` as any, lang);
 }
 
-export function WhyHere({ tree, lang, onClose, name }: Props) {
+export function WhyHere({ tree, lang, onClose, name, equity }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const ex = explain(tree.site);
 
@@ -42,6 +46,12 @@ export function WhyHere({ tree, lang, onClose, name }: Props) {
     tree.site.leafType === "evergreen"
       ? t("leafEvergreen", lang)
       : t("leafDeciduous", lang);
+
+  // Per-candidate block-group equity (real MassGIS, from the containing block
+  // group) takes priority; fall back to the town-wide summary.
+  const site = tree.site as GeoCandidate;
+  const ejCriteria = site.ejCriteria ?? (equity?.criteria?.join(", ") || null);
+  const bgMinority = site.bgMinorityPct;
 
   return (
     <div
@@ -100,6 +110,23 @@ export function WhyHere({ tree, lang, onClose, name }: Props) {
         <dd style={{ margin: 0 }}>
           {Math.round(ex.equityNeed * 100)}% · {tierPhrase(needTierOf(tree), lang)}
         </dd>
+        {ejCriteria && (
+          <>
+            <dt style={{ opacity: 0.7 }}>{t("whyEjCriteria", lang)}</dt>
+            <dd style={{ margin: 0 }}>
+              {ejCriteria}
+              {typeof bgMinority === "number" && (
+                <> · {Math.round(bgMinority)}% minority</>
+              )}
+            </dd>
+          </>
+        )}
+        {equity?.electric_utility && (
+          <>
+            <dt style={{ opacity: 0.7 }}>{t("whyUtility", lang)}</dt>
+            <dd style={{ margin: 0 }}>{equity.electric_utility}</dd>
+          </>
+        )}
       </dl>
 
       <ul style={{ margin: 0, paddingLeft: 18 }}>

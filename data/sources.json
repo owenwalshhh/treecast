@@ -21,11 +21,11 @@
     {
       "name": "MassGIS 2020 Environmental Justice block groups",
       "agency": "MassGIS (Commonwealth of Massachusetts)",
-      "url": "https://www.mass.gov/info-details/massgis-data-2020-environmental-justice-populations",
+      "url": "https://arcgisserver.digital.mass.gov/arcgisserver/rest/services/AGOL/EJ2020/MapServer/0",
       "license": "See MassGIS terms of use",
-      "accessed": "2026-10-18",
-      "used_for": "Equity profile of the demo town (minority %, limited-English %, income) and EJ flag.",
-      "cannot_tell_us": "This uploaded extract has NO geometry — attribute rows by municipality only, so block-group boundaries cannot be mapped from it."
+      "accessed": "2026-10-24",
+      "used_for": "Block-group polygons with GEOID for the Inner Core, so each candidate tree gets the equity (minority %, limited-English %, income, EJ criteria) of the block group that contains it.",
+      "cannot_tell_us": "The layer carries only EJ-flagged block groups, so a site in a non-flagged area has no EJ block group. No per-household data."
     },
     {
       "name": "MassGIS electric utility by town",
@@ -53,6 +53,33 @@
       "accessed": "2026-10-24",
       "used_for": "Avoid planting where a public tree already stands (when a city publishes an inventory).",
       "cannot_tell_us": "Chelsea has no published street-tree inventory found. Cambridge and Cape Cod do. Treecast can load any city's tree layer to avoid existing trees; for Chelsea this layer is currently empty."
+    },
+    {
+      "name": "MAPC Inner Core subregion",
+      "agency": "Metropolitan Area Planning Council (MAPC)",
+      "url": "https://www.mapc.org/get-involved/subregions/icc/",
+      "license": "MAPC public page",
+      "accessed": "2026-10-24",
+      "used_for": "The official list of 21 Inner Core municipalities Treecast covers.",
+      "cannot_tell_us": "Nothing about individual parcels; it only defines which towns are in the subregion."
+    },
+    {
+      "name": "MassGIS municipal boundaries",
+      "agency": "MassGIS (Commonwealth of Massachusetts) via Overture divisions",
+      "url": "https://www.mass.gov/info-details/massgis-data-municipalities",
+      "license": "See MassGIS terms of use",
+      "accessed": "2026-10-24",
+      "used_for": "Each town's edge, used to clip buildings, roads and candidate sites so neighboring towns meet with no gaps or overlaps.",
+      "cannot_tell_us": "Sub-municipal lines (wards, neighborhoods) are not in this layer."
+    },
+    {
+      "name": "OpenStreetMap / OpenFreeMap",
+      "agency": "OpenStreetMap contributors; OpenFreeMap",
+      "url": "https://openfreemap.org/",
+      "license": "ODbL (map data), OpenFreeMap free tiles",
+      "accessed": "2026-10-24",
+      "used_for": "The base map (streets, labels) the Treecast data is drawn on top of.",
+      "cannot_tell_us": "It is a reference base map, not a source of the equity or energy numbers."
     }
   ],
   "note": "Savings and scores shown in Treecast are modeled estimates, not measurements. See src/optimizer/coefficients.ts for every coefficient and its source or ASSUMPTION tag."
