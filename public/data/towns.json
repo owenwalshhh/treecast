@@ -10,7 +10,7 @@
       "buildings": 17834,
       "candidates": 2813,
       "hasPlanner": true,
-      "bytes": 9220337
+      "bytes": 9220376
     },
     {
       "name": "Everett",
@@ -26,27 +26,27 @@
       "slug": "revere",
       "base": "/data/revere",
       "buildings": 12680,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 5381778
+      "candidates": 6812,
+      "hasPlanner": true,
+      "bytes": 8803312
     },
     {
       "name": "Arlington",
       "slug": "arlington",
       "base": "/data/arlington",
       "buildings": 15395,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 6730497
+      "candidates": 8380,
+      "hasPlanner": true,
+      "bytes": 9912417
     },
     {
       "name": "Belmont",
       "slug": "belmont",
       "base": "/data/belmont",
       "buildings": 9873,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 4581276
+      "candidates": 6377,
+      "hasPlanner": true,
+      "bytes": 6853459
     },
     {
       "name": "Boston",
@@ -62,135 +62,135 @@
       "slug": "brookline",
       "base": "/data/brookline",
       "buildings": 10129,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 6152884
+      "candidates": 8521,
+      "hasPlanner": true,
+      "bytes": 10224931
     },
     {
       "name": "Cambridge",
       "slug": "cambridge",
       "base": "/data/cambridge",
       "buildings": 14721,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 9337119
+      "candidates": 6982,
+      "hasPlanner": true,
+      "bytes": 12607140
     },
     {
       "name": "Lynn",
       "slug": "lynn",
       "base": "/data/lynn",
       "buildings": 7177,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 3049404
+      "candidates": 3205,
+      "hasPlanner": true,
+      "bytes": 4960865
     },
     {
       "name": "Malden",
       "slug": "malden",
       "base": "/data/malden",
       "buildings": 14478,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 6278264
+      "candidates": 7273,
+      "hasPlanner": true,
+      "bytes": 9912702
     },
     {
       "name": "Medford",
       "slug": "medford",
       "base": "/data/medford",
       "buildings": 18078,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 8178665
+      "candidates": 8466,
+      "hasPlanner": true,
+      "bytes": 11630468
     },
     {
       "name": "Melrose",
       "slug": "melrose",
       "base": "/data/melrose",
       "buildings": 11447,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 4784128
+      "candidates": 6876,
+      "hasPlanner": true,
+      "bytes": 7206562
     },
     {
       "name": "Milton",
       "slug": "milton",
       "base": "/data/milton",
       "buildings": 11233,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 5110775
+      "candidates": 11140,
+      "hasPlanner": true,
+      "bytes": 9047262
     },
     {
       "name": "Needham",
       "slug": "needham",
       "base": "/data/needham",
       "buildings": 7508,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 3615235
+      "candidates": 8237,
+      "hasPlanner": true,
+      "bytes": 6256932
     },
     {
       "name": "Newton",
       "slug": "newton",
       "base": "/data/newton",
       "buildings": 26111,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 13213270
+      "candidates": 23744,
+      "hasPlanner": true,
+      "bytes": 19602873
     },
     {
       "name": "Quincy",
       "slug": "quincy",
       "base": "/data/quincy",
       "buildings": 26369,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 11537826
+      "candidates": 14938,
+      "hasPlanner": true,
+      "bytes": 18141434
     },
     {
       "name": "Saugus",
       "slug": "saugus",
       "base": "/data/saugus",
       "buildings": 10529,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 4626520
+      "candidates": 9794,
+      "hasPlanner": true,
+      "bytes": 8539227
     },
     {
       "name": "Somerville",
       "slug": "somerville",
       "base": "/data/somerville",
       "buildings": 15121,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 7389507
+      "candidates": 4524,
+      "hasPlanner": true,
+      "bytes": 9638053
     },
     {
       "name": "Waltham",
       "slug": "waltham",
       "base": "/data/waltham",
       "buildings": 7992,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 4361013
+      "candidates": 6695,
+      "hasPlanner": true,
+      "bytes": 7179977
     },
     {
       "name": "Watertown",
       "slug": "watertown",
       "base": "/data/watertown",
       "buildings": 10207,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 5338453
+      "candidates": 4728,
+      "hasPlanner": true,
+      "bytes": 7514293
     },
     {
       "name": "Winthrop",
       "slug": "winthrop",
       "base": "/data/winthrop",
       "buildings": 5703,
-      "candidates": 0,
-      "hasPlanner": false,
-      "bytes": 2351826
+      "candidates": 2433,
+      "hasPlanner": true,
+      "bytes": 3669623
     }
   ]
 }
